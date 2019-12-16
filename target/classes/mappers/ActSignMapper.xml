@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ams.mapper.ActSignMapper">
+
+<select id="countByExample"  resultType="java.lang.Integer">
+    select count(*) from tbl_act_sign,tbl_user where tbl_act_sign.uid=tbl_user.uid and sign_state!='取消' and actid=#{actid}
+    <if test="str != null">
+        and (name like "%"#{str}"%" or sduid like "%"#{str}"%" or major like "%"#{str}"%")
+    </if>
+</select>
+
+<select id="selectByExample" parameterType="map" resultType="com.ams.entity.User">
+    select * from tbl_act_sign,tbl_user where tbl_act_sign.uid=tbl_user.uid and sign_state!='取消' and actid=#{actid}
+    <if test="str != null">
+        and (name like "%"#{str}"%" or sduid like "%"#{str}"%" or major like "%"#{str}"%")
+    </if>
+    limit ${offset},${limit}
+</select>
+
+<select id="selectOne" parameterType="map" resultType="com.ams.entity.ActSign">
+    select * from tbl_act_sign where actid=#{actid} and uid=#{uid}
+</select>
+
+<select id="selectByUser"  resultType="com.ams.entity.Activity">
+    select * from tbl_act_sign,tbl_activity where tbl_act_sign.uid=#{uid} and sign_state="报名" and tbl_act_sign.actid=tbl_activity.actid and act_state="已发布"
+</select>
+
+<select id="countByAct" resultType="java.lang.Integer">
+    select count(*) from tbl_act_sign where actid=#{actid} and sign_state="报名"
+</select>
+
+<update id="updateByExample" parameterType="com.ams.entity.ActSign">
+    update tbl_act_sign set sign_state=#{sign_state} where asid=#{asid}
+</update>
+
+<insert id="add" parameterType="com.ams.entity.ActSign">
+    insert into tbl_act_sign (actid,uid,sign_state)
+    values (#{actid,jdbcType=INTEGER}, #{uid,jdbcType=VARCHAR},"报名")
+</insert>
+
+</mapper>

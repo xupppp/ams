@@ -1,0 +1,211 @@
+
+<title>添加新闻</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>新闻</cite></a>
+    <a><cite>添加</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-header">新闻添加表</div>
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form layui-form-pane"  lay-filter="component-form-group">
+        <div class="layui-form-item">
+          <label class="layui-form-label">新闻标题</label>
+          <div class="layui-input-block">
+          <script type="text/html" template>
+            <input type="text" name="news_title" id="news_title" lay-verify="required" lay-reqtext="新闻标题是必填项，不能为空" placeholder="请输入新闻标题" autocomplete="off" class="layui-input">
+		 </script>
+          </div>
+        </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">新闻类别</label>
+    <div class="layui-input-block">
+        <select name="news_type" id="mo_news_type"  lay-verify="required"  lay-search="" >
+                <option value="">请搜索或直接选择...</option>
+                <option value="社团风采" >社团风采</option>
+                <option value="活动回顾" >活动回顾</option>
+				<option value="公示">公示</option>
+        </select>
+    </div>
+  </div>
+        <div class="layui-form-item">
+							<label class="layui-form-label">新闻图片</label>
+							<div class="layui-input-block">
+								<div class="layui-upload">
+  <button type="button" class="layui-btn layui-btn-primary" id="testList">
+  <i class="layui-icon">&#xe654;</i>请选择
+  </button> 
+  <div class="layui-upload-list">
+    <table class="layui-table">
+      <thead>
+        <tr><th>文件名</th>
+        <th>大小</th>
+        <th>状态</th>
+        <th>操作</th>
+      </tr></thead>
+      <tbody id="demoList"></tbody>
+    </table>
+  </div>
+  <button type="button" class="layui-btn layui-btn-primary" id="testListAction">
+  <i class="layui-icon">&#xe67c;</i>开始上传</button>
+</div>
+							</div>
+							<input type="text" name="news_img" id="news_img" style='display:none'>
+						</div> 
+
+  		  <div class="layui-form-item layui-form-text">
+    		<label class="layui-form-label">新闻内容</label>
+    		<div class="layui-input-block">
+      		<script type="text/html" template>
+        	<textarea name="news_contents" lay-verify="required"class="layui-textarea"></textarea>
+      		</script>
+    		</div>
+  		</div>
+        <div class="layui-form-item">
+        
+            <input type="button" lay-submit lay-filter="LAY-user-front-submit" value="确认" class="layui-btn">
+      		<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+
+  
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+layui.use(['admin', 'form', 'upload', 'laydate'], function(){
+  var $ = layui.$
+  ,form = layui.form
+  ,laydate = layui.laydate
+  ,upload = layui.upload;
+  
+  //多图片上传
+  upload.render({
+    elem: '#upload'
+    ,url: '/upload/'
+    ,multiple: true
+    ,before: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+        $('#demo2').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">')
+      });
+    }
+    ,done: function(res){
+      //上传完毕
+    }
+  });
+});
+	
+layui.use(['admin', 'form', 'laydate','upload'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,element = layui.element
+  ,layer = layui.layer
+  ,laydate = layui.laydate
+  ,upload=layui.upload
+  ,form = layui.form;
+  
+  /* form.render(null, 'component-form-group'); */
+  form.render();
+
+  laydate.render({
+    elem: '#LAY-component-form-group-date'
+  });
+  
+  laydate.render({
+	    elem: '#timechoose1'
+	    ,type: 'datetime'
+	  });
+  
+	//多文件列表示例
+	 var imgsrc='';
+	  var demoListView = $('#demoList')
+	  ,uploadListIns = upload.render({
+		async:false
+	    ,elem: '#testList'
+	    ,url: 'news/uploadimg'
+	    ,acceptMime: 'image/*'
+	    ,multiple: true
+	    ,auto: false
+	    ,bindAction: '#testListAction'
+	    ,choose: function(obj){   
+	      var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+	      //读取本地文件
+	      obj.preview(function(index, file, result){
+	        var tr = $(['<tr id="upload-'+ index +'">'
+	          ,'<td>'+ file.name +'</td>'
+	          ,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+	          ,'<td>等待上传</td>'
+	          ,'<td>'
+	            ,'<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+	            ,'<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+	          ,'</td>'
+	        ,'</tr>'].join(''));
+	        
+	        //单个重传
+	        tr.find('.demo-reload').on('click', function(){
+	          obj.upload(index, file);
+	        });
+	        
+	        //删除
+	        tr.find('.demo-delete').on('click', function(){
+	          delete files[index]; //删除对应的文件
+	          tr.remove();
+	          uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+	        });
+	        
+	        demoListView.append(tr);
+	      });
+	    }
+	    ,done: function(res, index, upload){
+	      if(res.code == 0){ //上传成功
+	    	 imgsrc=imgsrc+res.data.src+";";
+	        var tr = demoListView.find('tr#upload-'+ index)
+	        ,tds = tr.children();
+	        tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+	        tds.eq(3).html(''); //清空操作
+	        return delete this.files[index]; //删除文件队列已经上传成功的文件
+	      }
+	      this.error(index, upload);
+	    }
+	    ,error: function(index, upload){
+	      var tr = demoListView.find('tr#upload-'+ index)
+	      ,tds = tr.children();
+	      tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+	      tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
+	    }
+	  });
+	  form.render();
+  /* 监听提交 */
+  form.on("submit(LAY-user-front-submit)", function(e) {
+	  e.field.news_img=imgsrc;
+	  e.field.news_state="已发布";
+	  e.field.uid=-1;
+		$.ajax({
+			async:false,
+            type: 'POST',
+            url: "news/add",
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(e.field),
+            success: function (msg) { 
+                if (msg == 1) {
+                	layer.msg('添加新闻成功');
+                }
+                else {
+                    layer.msg('添加失败！请重试');
+                }
+            },
+        }); 
+		
+	})
+
+})
+
+</script>

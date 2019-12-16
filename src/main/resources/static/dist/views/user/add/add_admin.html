@@ -1,0 +1,179 @@
+<title>
+	添加管理员</title>
+
+<div class="layui-card layadmin-header">
+	<div class="layui-breadcrumb" lay-filter="breadcrumb">
+		<a lay-href="">主页</a>
+		<a><cite>用户</cite></a>
+		<a><cite>添加管理员</cite></a>
+	</div>
+</div>
+
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-card-header">管理员添加表</div>
+		<div class="layui-card-body" style="padding: 15px;">
+			<form class="layui-form" lay-filter="layuiadmin-form-useradmin">
+				<div class="layui-form-item">
+					<label class="layui-form-label">头像</label>
+					<div class="layui-input-block">
+						<div class="layui-upload">
+							<button type="button" class="layui-btn layui-btn-primary" id="upload">
+								<i class="layui-icon">&#xe654;</i>请选择
+							</button>
+							<div class="layui-upload-list">
+								<img class="layui-upload-img" id="demo1">
+								<p id="demoText"></p>
+							</div>
+							<button type="button" class="layui-btn layui-btn-primary" id="sure">
+								<i class="layui-icon">&#xe67c;</i>开始上传
+							</button>
+						</div>
+					</div>
+					<input type="text" name="user_logo" id="user_logo" style='display:none'>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">工号</label>
+					<div class="layui-input-block">
+						<script type="text/html" template>
+							<input type="text" name="emid" id="emid" lay-verify="required" placeholder="请输入学号" autocomplete="off" class="layui-input">
+						</script>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">名字</label>
+					<div class="layui-input-block">
+						<script type="text/html" template>
+							<input type="text" name="name" id="name" lay-verify="required" placeholder="请输入名字" autocomplete="off" class="layui-input">
+						</script>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">类型</label>
+					<div class="layui-input-block">
+						<select name="type" lay-verify="required">
+							<option value=""></option>
+							<option value="管理员">管理员</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">性别</label>
+					<div class="layui-input-block">
+						<input type="radio" name="sex" value="男" title="男">
+						<input type="radio" name="sex" value="女" title="女" checked>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">专业</label>
+					<div class="layui-input-block">
+						<script type="text/html" template>
+							<input type="text" name="major" id="major" lay-verify="required" placeholder="请输入专业" autocomplete="off" class="layui-input">
+						</script>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">班级</label>
+					<div class="layui-input-block">
+						<script type="text/html" template>
+							<input type="text" name="class_num" id="class_num" lay-verify="required" placeholder="请输入班级" autocomplete="off" class="layui-input">
+						</script>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">电话</label>
+					<div class="layui-input-block">
+						<script type="text/html" template>
+							<input type="text" name="phone" id="phone" lay-verify="required" placeholder="请输入电话" autocomplete="off" class="layui-input">
+						</script>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">邮箱</label>
+					<div class="layui-input-block">
+						<script type="text/html" template>
+							<input type="text" name="email" id="email" lay-verify="required" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+						</script>
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<input type="button" lay-submit lay-filter="LAY-user-front-submit" value="添加" class="layui-btn">
+						<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					</div>
+				</div>
+
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+	layui.use(['admin', 'form', 'upload'], function() {
+		var $ = layui.$,
+			form = layui.form,
+			upload = layui.upload;
+
+		//动态加载下拉框
+		var src = '<option value="">请搜索或直接选择...</option>';
+		$.ajax({
+			url: '/student/list',
+			dataType: 'json',
+			success: function(data) {
+				$.each(data, function(index, item) {
+					src += "<option value='" + item.uid + "'>" + item.sduid + item.name + "</option>";
+				});
+				$('#user').html(src);
+        form.render();
+			}
+		});
+
+		upload.render({
+			async:false,
+			elem: '#upload'
+			,url: 'user/uploadimg'
+			,auto: false
+			,bindAction: '#sure'
+			,acceptMime: 'image/*'
+			,choose: function(obj){
+				obj.preview(function(index, file, result){
+					$('#demo1').attr('src', result); //图片链接（base64）
+				});
+			}
+			,done: function(res){
+				//如果上传失败
+				if(res.code > 0){
+					return layer.msg('上传图片失败');
+				}
+				else{
+					$("#user_logo").val(res.data.src);
+					layer.msg("图片上传成功");
+				}
+			}
+			,error: function(){
+			}
+		});
+
+		form.on("submit(LAY-user-front-submit)", function(e) {
+
+			$.ajax({
+				type: 'POST',
+				url: "user/add",
+				dataType: 'json',
+				contentType: 'application/json',
+				data: JSON.stringify(e.field),
+				success: function(msg) {
+					if(msg == 1) {
+						layer.msg('添加用户成功');
+					} else {
+						layer.msg('添加失败！请重试');
+					}
+				},
+			});
+			layer.close(i);
+
+		})
+
+	})
+</script>

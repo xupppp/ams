@@ -1,0 +1,423 @@
+<link rel="stylesheet" href="vendor/layui/css/layui.css">
+<script type="text/javascript" src="vendor/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.params.js"></script>
+<script type="text/javascript" src="vendor/layui/layui.js"></script>
+<body style="background: transparent url(img/PTS_Movie_Branding_Background.jpg)no-repeat 0 0;background-attachment: fixed;background-size: cover;">
+<div class="layui-layout layui-layout-admin">
+	<div class="layui-header" style="z-index:9999;position: relative;">
+
+		<!-- 头部区域 -->
+		<ul class="layui-nav" style="padding: 0 200px;">
+			<div class="layui-logo" style="color:white;">AMS-stu</div>
+			<li class="layui-nav-item">
+				<a href="stu-index">首页</a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="#">社团</a>
+				<dl class="layui-nav-child">
+				    <dd>
+						<a href="club-list">社团展示</a>
+					</dd>
+					<dd>
+						<a href="club-build" id="nav-buildclub">创建社团</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="#">活动</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="activity-all-list">校内活动</a>
+					</dd>
+					<dd>
+						<a href="activity-inner-list">社内活动</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="news-all-list">新闻</a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;">我的</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="club-mine">我的社团</a>
+					</dd>
+					<dd>
+						<a href="notice-mine">我的公告</a>
+					</dd>
+					<dd>
+						<a href="myAct">我的活动</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item" id="nav-manager">
+				<a href="javascript:;">管理</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="manageClub">社团管理</a>
+					</dd>
+					<dd>
+						<a href="manageNotice">公告管理</a>
+					</dd>
+					<dd>
+						<a href="addNotice">发布公告</a>
+					</dd>
+					<dd>
+						<a href="manageAct">活动管理</a>
+					</dd>
+					<dd>
+						<a href="applyAct">申请活动</a>
+					</dd>
+		            <dd>
+						<a href="managenews">新闻管理</a>
+					</dd>
+					<dd>
+						<a href="addnews">发布新闻</a>
+					</dd>
+				</dl>
+			 </li>
+		</ul>
+
+		<ul class="layui-nav layui-layout-right">
+			<li class="layui-nav-item layui-hide-xs" lay-unselect>
+				<input type="text" placeholder="搜索..." autocomplete="off" class="layui-input layui-input-search" layadmin-event="serach" lay-action="template/search/keywords=">
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;" id='username'>
+					<img id="userlogo" class="layui-nav-img">
+				</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="userinformation">基本资料</a>
+					</dd>
+					<dd>
+						<a href="setPwd">修改密码</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:void(0);" onclick="loginout()">退出登录</a>
+			</li>
+		</ul>
+
+	</div>
+
+	<!-- 主体内容 -->
+	<div class="layui-body" style="margin-right:200px;background-color:white;padding:10px 20px 10px 20px;">
+		<div>
+
+		<hr class="layui-bg-black" style="margin-top:30px;">
+		<fieldset class="layui-elem-field layui-field-title">
+			<legend id="actname">活动名称</legend>
+		</fieldset>
+		<div class="layui-fluid">		
+			<div  style="background:#FBF6F4; width:100%;border-radius: 25px;">
+			<div class="layui-row layui-col-space10" style="height:55px;padding-top:20px;">
+                <div class="layui-col-md1 layui-col-md-offset2">
+                 <img src="img/kaishi.png" width="70%"></img>
+                </div>
+                <div class="layui-col-md3" id="start_time" style="line-height:55px;font-size:18px;color:#393D49;">
+                 开始时间
+                </div>
+                <div class="layui-col-md1" style="margin-top:5px;">
+                 <img src="img/jieshu.png" width="60%"></img>
+                </div>
+                <div class="layui-col-md4"id="end_time" style="line-height:55px;font-size:18px;color:#393D49;">
+                 结束时间
+                </div>  
+            </div>
+            <div class="layui-row layui-col-space10" style="height:55px;padding-top:10px;">
+                <div class="layui-col-md1 layui-col-md-offset2">
+                 <!-- <img src="img/minge.png" width="65%"></img> -->
+                 <i class="layui-icon layui-icon-group" style="font-size: 40px; color: #36A18B;"></i>
+                </div>
+                <div class="layui-col-md3">
+                     <div class="layui-row " style="height:55px;padding-top:10px;"> 
+                         <div class="layui-col-md4" id="numberlimit"  style="line-height:30px;font-size:18px;color:#393D49;">名额</div>                  
+                         <div class="layui-col-md8"   style="padding-top:7px;">
+                              <span id="signnum" class="layui-badge">已报名人数</span>
+                         </div>
+                     </div>
+                </div>
+                <div class="layui-col-md1" >
+                  <img src="img/changdi.png" width="65%"></img> 
+                </div>
+                <div class="layui-col-md5"id="field" style="line-height:50px;font-size:18px;color:#393D49;">
+                 地点
+                </div>  
+            </div>
+            <div class="layui-row" style="text-align:center;padding-top:25px; ">
+                 <div id="contents" style="width:70%;margin:10px auto;text-align:left;font-size:16px;color:#393D49;line-height:40px;font-weight:380;"> 
+                 活动内容 
+                 </div>
+            </div>
+            <div style="height:30px;"></div>
+			</div>
+			
+			<div id="club-card"></div> 
+			<!-- 
+			<div  style="background:#ECF1F9; width:100%;height:230px;border-radius: 25px;margin-top:10px">
+			    <div class="layui-row" style="padding-top:40px;">
+			    	<div class="layui-col-md1 " style="width:20px;line-height:35px;font-size:20px;color:#393D49;margin-top:10px;margin-left:50px;">
+                        发起社团
+                    </div>
+			        <div class="layui-col-md3 layui-col-md-offset1">
+                        <img id="club-logo" style="width:150px;border-radius: 50%;">
+                    </div>
+                    <div class="layui-col-md5 ">
+                           <div class="layui-row" id="club-name" style="padding-top:10px;font-size:18px;color:#393D49;">社团名称</div>
+                           <div class="layui-row" style="padding-top:10px;font-size:16px;color:#393D49;overflow: hidden;display:-webkit-box; -webkit-line-clamp:4;-webkit-box-orient: vertical;">社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍社团介绍</div>
+                    </div>		    
+			    
+			    </div>
+			</div>
+			 -->
+			<div id="shelian"></div>
+			<!--
+			<div  id="shelian" style="background:#ECF1F9; width:100%;height:120px;border-radius: 25px;margin-top:10px">
+			    <div class="layui-row" style="padding-top:20px;">
+			        <div class="layui-col-md2 layui-col-md-offset3">
+                        <img src="img/shelian.png" style="width:80px;">
+                    </div>
+                    <div class="layui-col-md5 " style="padding-top:20px;font-size:25px;color:#393D49;">
+                         本 活 动 由 社 联 发 起
+                    </div>		    
+			    
+			    </div>
+			</div>
+			-->
+			
+			<div  style="background:#FBF6F4; width:100%;height:200px;border-radius: 25px;margin-top:10px">
+			   <div class="layui-row" style="padding-top:25px;">
+			    	<div class="layui-col-md1 " style="width:20px;line-height:35px;font-size:20px;color:#393D49;margin-top:15px;margin-left:50px;">
+                        负责人
+                    </div>
+			        <div class="layui-col-md3 layui-col-md-offset1">
+                        <img src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=473640774,764839688&fm=26&gp=0.jpg" style="width:150px;border-radius: 50%;">
+                    </div>
+                    <div class="layui-col-md5 ">
+                           <div id="chargename" class="layui-row" style="font-size:18px;color:#393D49;">姓名</div>
+                           <div class="layui-row" style="padding-top:10px;">
+                               <div class="layui-col-md1" >
+                                   <img src="img/banji.png" width="95%"></img>
+                               </div>
+                               <div id="banji" class="layui-col-md8" style="line-height:30px;font-size:16px;color:#393D49;font-weight:380;">
+                                班级
+                               </div>
+                           </div>
+                           <div class="layui-row" style="padding-top:10px;">
+                               <div class="layui-col-md1" >
+                                   <img src="img/shouji.png" width="80%"></img>
+                               </div>
+                               <div id="phone" class="layui-col-md8" style="line-height:30px;font-size:16px;color:#393D49;font-weight:380;">
+                                手机号
+                               </div>
+                           </div>
+                           <div class="layui-row" style="padding-top:10px;">
+                               <div class="layui-col-md1" >
+                                   <img src="img/youxiang.png" width="80%"></img>
+                               </div>
+                               <div id="email" class="layui-col-md8" style="line-height:30px;font-size:16px;color:#393D49;font-weight:380;">
+                                邮箱
+                               </div>
+                           </div>
+                    </div>		    
+			    
+			    </div>
+			
+			</div>
+			<div  id="btn"></div>
+			
+			<div style="height:30px;"></div>	 
+
+			
+		</div>
+        </div>
+	</div>
+	
+</div>
+</body>
+<script>
+var actid = $.query.get("actid");	//获取url路径中actid的值
+var type = $.query.get("type");	//获得本页面的类型
+if(type==1){
+	$("#btn").append("<button type='button' onclick='baoming()' class='layui-btn  layui-btn-radius layui-btn-danger layui-btn-fluid' style='margin-top:10px;'>我 要 报 名</button>");
+}
+if(type==3){
+	$("#btn").append("<button type='button' onclick='baoming()' class='layui-btn  layui-btn-radius layui-btn-danger layui-btn-fluid' style='margin-top:10px;'>我 要 报 名</button>");
+}
+var actlimit; //定义活动名额
+var signnum; //定义已报名人数
+$.ajax({            //动态加载本页数据
+   type: 'GET',
+   url: "activity/selectOne?actid="+actid,
+   async:false,
+   success: function (data) { 
+	 actlimit=data.act_numberlimit; //获取活动名额
+   	$("#actname").text(data.act_name);
+   	$("#start_time").text(data.start_time);
+   	$("#end_time").text(data.end_time);
+   	$("#numberlimit").text(data.act_numberlimit+"人");
+   	$("#field").text(data.fname);
+   	$("#contents").text(data.act_contents);
+   	if(data.cid>0){         //如果是社团发起的活动则显示下面的部分
+   	var clublable="<div class='layui-col-md1' style='width:20px;line-height:35px;font-size:20px;color:#393D49;margin-top:10px;margin-left:50px;'>发起社团</div>"
+   	var clublogoimg=$("<img style='width:150px;border-radius: 50%;'>").attr("src",data.club_logo);
+   	var clublogo=$("<div class='layui-col-md3 layui-col-md-offset1'></div>").append(clublogoimg);
+   	var clubname=$("<div class='layui-row' id='club-name' style='padding-top:10px;font-size:18px;color:#393D49;'></div>").text(data.cname);
+   	var clubcontents=$("<div class='layui-row' style='padding-top:10px;font-size:16px;font-weight:350;color:#393D49;overflow: hidden;display:-webkit-box; -webkit-line-clamp:4;-webkit-box-orient: vertical;'></div>").text(data.club_contents);
+   	var clubstr=$("<div class='layui-col-md5 '></div>").append(clubname,clubcontents);
+   	var club=$("<div class='layui-row' style='padding-top:40px;'></div>").append(clublable,clublogo,clubstr);
+   	var t1=$("<div  style='background:#FBF6F4; width:100%;height:230px;border-radius: 25px;margin-top:10px'></div>").append(club);
+   	$("#club-card").append(t1);
+   	}
+   	else{        //如果是社联发起的活动则显示下面这部分
+   		var t2="<div  style='background:#FBF6F4; width:100%;height:120px;border-radius: 25px;margin-top:10px'><div class='layui-row' style='padding-top:20px;'><div class='layui-col-md2 layui-col-md-offset3'><img src='img/shelian.png' style='width:80px;'></div><div class='layui-col-md5 ' style='padding-top:20px;font-size:25px;color:#393D49;'>本 活 动 由 社 联 发 起</div></div></div>"
+   		$("#shelian").append(t2);
+   	}
+   	//显示负责人部分
+   	$("#chargename").text(data.name);
+   	$("#banji").text(data.major+data.class_num);
+   	if(data.phone==null||data.phone==''){
+   		$("#phone").text("TA还没有留下手机号～");
+   	}
+   	else{
+   		$("#phone").text(data.phone);
+   	}
+   	if(data.email==null||data.email==''){
+   		$("#email").text("TA还没有留下邮箱～");
+   	}
+   	else{
+   		$("#email").text(data.email);
+   	}
+   },
+});
+//获取该活动已报名人数
+$.ajax({
+    type: 'GET',
+    async:false,
+    url: "activity/countSign?actid="+actid,
+    success: function (count) { 
+        $("#signnum").text("已有"+count+"人报名");
+        signnum=count;
+    },
+});
+
+	layui.use(['laypage', 'layer','element','carousel','form','util'], function() {
+		var laypage = layui.laypage,
+			layer = layui.layer,
+			element = layui.element,
+			carousel = layui.carousel,
+			form = layui.form
+			,util=layui.util
+			,$=layui.$;
+		//固定块
+		  util.fixbar({
+		    bar1: '&#xe65c'
+		    ,css: {right: 40, bottom: 30}
+		    ,bgcolor: '#393D49'
+		    ,click: function(type){
+		      if(type === 'bar1'){
+		    	  window.history.back(-1);
+		      } 
+		      if (type === 'top') {
+	                layer.msg('返回顶部')
+	          }
+		    }
+		  });
+		//监听导航点击
+		element.on('nav(demo)', function(elem) {
+			//console.log(elem)
+			layer.msg(elem.text());
+		});
+		//显示菜单栏用户信息
+		$.ajax({
+		    type: 'GET',
+		    url: "login/getLoginUser",
+		    success: function (data) { 
+		    	if(data.type!="学生"){
+		    		loginout();
+		    	}
+		    	$("#username").append(data.name);
+		    	$("#userlogo").attr('src',data.user_logo);
+		    }
+		});
+		//是否显示管理菜单
+		$.ajax({
+			    type: 'GET',
+			    url: "login/president",
+			    success: function (msg) { 
+			        if(msg==0){
+			        	$("#nav-manager").hide();
+			        }
+			        else{
+			        	$("#nav-buildclub").hide();
+			        }
+			    }
+			});
+		//退出登录
+		 loginout=function(){
+			$.ajax({
+ 			    type: 'GET',
+ 			    url: "login/logout",
+ 			    success: function (msg) { 
+ 			        if(msg==1){
+ 			        	layer.msg('退出成功，正在跳转......', {icon: 6});
+	                    setTimeout(function () {
+	                        window.location.href = "stu-login";
+	                    }, 2000);
+ 			        }
+ 			        else{
+ 			        	layer.msg('退出错误，请重试', {icon: 5});
+ 			        }
+ 			    }
+ 			});
+		}
+		
+		baoming=function(){
+			if(signnum==actlimit){
+				layer.msg("活动报名人数已满，再看看吧～")
+				return false;
+			}
+			layer.confirm('确定要报名该活动吗？', {
+				  btn: ['报名','再看看']
+				}, function(){
+					var str={actid:actid,uid:-1};
+					$.ajax({
+			              type: 'POST',
+			              url: "activity/addSign",
+			              dataType: 'json',
+			              contentType: 'application/json',
+			              data: JSON.stringify(str),
+			              success: function (msg) { 
+			                  if (msg == 1) {
+			                	  layer.msg("报名成功！")
+			                  } 
+			                  else if(msg == -1){
+			                      layer.msg('您已报名该活动');
+			                  }
+			                  else {
+			                      layer.msg('操作失败！请重试');
+			                  }
+			              },
+			          });
+				}, function(){
+				  
+				});
+		}  
+/* 		//返回
+		fanhui2=function(){
+			window.location.href = "manageAct";
+		}
+		fanhui=function(){
+			window.location.href = "activity-all-list";
+		}
+		fanhui3=function(){
+			window.location.href = "activity-inner-list";
+		} */
+		
+		
+
+	});
+</script>

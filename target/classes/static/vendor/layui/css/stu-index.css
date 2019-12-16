@@ -1,0 +1,46 @@
+.layui-card .layui-card-body img{
+	width: 150px;
+	border-radius: 50%;
+	margin-bottom: 20px;
+	transition: all 0.4s;
+}
+.layui-body .layui-card .layui-card-body img:hover{
+	transform: scale(1.15);
+}
+.layui-card .site-demo-button button:hover{
+	transform: scale(1.15);
+}
+.layui-col-md4 .layui-card:hover{
+	transform: scale(1.05);
+}
+.small:hover{
+	transform: scale(1.05);
+}
+.d1:hover{
+	transform: scale(1.05);
+	color:#7B8B6F;
+}
+.join button:hover{
+	transform: scale(1.05);
+}
+.layui-col-xs6 button:hover{
+	transform: scale(1.1);
+}
+.big:hover{
+	transform: scale(1.05);
+}
+.layui-col-md4 button:hover{
+	transform: scale(1.05);
+}
+.d2:hover{
+	transform: scale(1.05);
+}
+.layui-col-xs6 .layui-col-md9 img:hover{
+	transform: scale(1.1);
+}
+.d3 button:hover{
+	transform: scale(1.05);
+}
+.more button:hover{
+	transform: scale(1.1);
+}

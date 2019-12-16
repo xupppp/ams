@@ -1,0 +1,44 @@
+<body>
+<div class="layui-form layui-form-pane" lay-filter="layuiadmin-form-useradmin" >
+    
+  <div class="layui-form-item">
+    <label class="layui-form-label">公告发布时间</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <input type="text" name="noti_time" id="timechoose1" value="{{ d.params.noti_time || '' }}" lay-verify="datetime" placeholder="请选择发布时间" autocomplete="off" class="layui-input">
+       
+      </script>
+    </div>
+  </div>
+  
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">公告内容</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <textarea name="noti_contents" required lay-verify="required"class="layui-textarea">{{ d.params.noti_contents || '' }}</textarea>
+      </script>
+    </div>
+  </div>
+  
+  <div class="layui-form-item">
+
+      <input type="button" lay-submit lay-filter="LAY-user-front-submit" value="确认" class="layui-btn">
+ 
+  </div>
+  
+</div>
+
+ <script>
+layui.use(['admin', 'form', 'upload', 'laydate'], function(){
+  var $ = layui.$
+  ,form = layui.form
+  ,laydate = layui.laydate
+  ,upload = layui.upload;     
+
+  laydate.render({
+    elem: '#timechoose1'
+    ,type: 'datetime'
+  });
+})
+</script> 
+</body>

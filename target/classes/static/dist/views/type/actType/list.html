@@ -1,0 +1,301 @@
+<title>活动类别 - 数据表格</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>类别</cite></a>
+    <a><cite>活动类别</cite></a>
+    <a><cite>活动类别列表</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">活动类别列表</div>
+        <div class="layui-card-body">
+          <table class="layui-hide" id="test-table-toolbar" lay-filter="test-table-toolbar"></table>
+
+          <script type="text/html" id="test-table-toolbar-toolbarDemo">
+            <div class="layui-input-inline">
+              <input type="text" placeholder="输入活动类别名搜索..." autocomplete="off" class="layui-input layui-input-search" id="search-str" lay-filter=“search-str”>
+            </div>
+            <div class="layui-inline">
+              <button class="layui-btn layui-btn-sm" lay-event=" actType-search">
+                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+              </button>
+            </div>
+            <div class="layui-inline" style="margin-left: 20px;">
+              <button class="layui-btn layui-btn-sm" lay-event="getAct">查看相应活动信息</button>
+            </div>
+          </script>
+          <script type="text/html" id="test-table-toolbar-toolbarDemo1">
+
+
+          </script>
+
+          <script type="text/html" id="test-table-toolbar-barDemo">
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+          </script>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  <script type="text/html" id="buttonTpl">-->
+<!--        {{#  if(d.club_state == '运行'){ }}-->
+<!--          <button class="layui-btn layui-btn-normal layui-btn-xs">正在运行</button>-->
+<!--        {{#  } else if(d.club_state == '成立待审'){ }}-->
+<!--          <button class="layui-btn layui-btn-warm layui-btn-xs">成立待审</button>-->
+<!--        {{#  } else if(d.club_state == '修改待审'){ }}-->
+<!--          <button class="layui-btn layui-btn-xs">修改待审</button>-->
+<!--        {{#  } else if(d.club_state == '审核失败'){ }}-->
+<!--          <button class="layui-btn layui-btn-primary layui-btn-xs">审核失败</button>-->
+<!--        {{#  } else{ }}-->
+<!--          <button class="layui-btn layui-btn-danger layui-btn-xs">删除</button>-->
+<!--        {{#  } }}-->
+<!--  </script>-->
+<!--  <script type="text/html" id="buttonTpl2">-->
+<!--        {{#  if(d.mem_state == '在社'){ }}-->
+<!--          <button class="layui-btn layui-btn-normal layui-btn-xs">在社</button>-->
+<!--        {{#  } else if(d.mem_state == '已退社'){ }}-->
+<!--          <button class="layui-btn layui-btn-danger layui-btn-xs">已退社</button>-->
+<!--        {{#  } else if(d.mem_state == '申请入社'){ }}-->
+<!--          <button class="layui-btn layui-btn-xs">申请入社</button>-->
+<!--        {{#  } else{ }}-->
+<!--          <button class="layui-btn layui-btn-warm layui-btn-xs">申请退社</button>-->
+<!--        {{#  } }}-->
+<!--  </script>-->
+<!--  <script type="text/html" id="buttonTpl3">-->
+<!--        {{#  if(d.president_flag == 1){ }}-->
+<!--          <button class="layui-btn layui-btn-danger layui-btn-xs">社长</button>-->
+<!--        {{#  } else{ }}-->
+<!--          <button class="layui-btn layui-btn-warm layui-btn-xs">成员</button>-->
+<!--        {{#  } }}-->
+<!--  </script>-->
+
+<script>
+  layui.use(['admin', 'table', 'upload'], function(){
+    var admin = layui.admin
+            ,table = layui.table
+            ,upload = layui.upload
+            ,$=layui.$
+            ,t = layui.view
+            ,r = layui.form
+            ,i = (layui.$, layui.admin);
+
+    table.render({
+      elem: '#test-table-toolbar'
+      ,url:'/activityType/selectAllType'
+      ,toolbar: '#test-table-toolbar-toolbarDemo'
+      ,title: '活动类别数据表'
+      ,cols: [[
+        {type: 'radio', fixed: 'left'}
+        ,{field:'atid', title:'ID', width:100, fixed: 'left', unresize: true, sort: true}
+        ,{field:'act_type_name', title:'活动类型名', width:690, edit: 'text', sort: true}
+        ,{field:'act_type_state', title:'活动类型状态', width:160, edit: 'text', sort: true}
+        ,{fixed: 'right', title:'操作', toolbar: '#test-table-toolbar-barDemo', width:150}
+      ]]
+      ,page: true
+      ,id: 'testReload'
+    });
+
+    //头工具栏事件
+    table.on('toolbar(test-table-toolbar)', function(obj){
+      var checkStatus = table.checkStatus(obj.config.id);
+      var data = checkStatus.data;
+
+      switch(obj.event){
+        case 'actType-search':                //社团类别搜索
+          var str=$("#search-str").val()
+          table.reload('testReload', {
+            where: { //设定异步数据接口的额外参数，任意设置
+              str:str
+            }
+            ,page: {
+              curr: 1 //重新从第 1 页开始
+            }
+          }); //只重载数据
+          break;
+
+        case 'getAct':
+          if(data.length!=1){
+            layer.msg("未选中行");
+            break;
+          }
+          i.popup({
+            title: "活动列表",
+            area: ["1100px", "600px"],
+            id: "LAY-popup-list-Act",
+            success: function(e, i) {
+              t(this.id).render("type/actType/Act").done(function() {
+
+                table.render({                   //表格渲染
+                  elem: '#act-table'
+                  ,url:'/activityType/selectAct'
+                  ,where: {
+                    atid:data[0].atid
+                  }
+
+                  ,toolbar: '#test-table-toolbar-toolbarDemo1'
+                  ,title: '活动信息表'
+                  ,cols: [[
+                    {type:'radio'}
+                    ,{field:'actid', title:'ID', width:100, unresize: true, sort: true,hide:true}
+                    ,{field:'act_name', title:'活动名', width:170}
+                    ,{field:'act_contents', title:'活动内容', width:160}
+                    ,{field:'act_numberlimit', title:'名额', width:70,sort: true}
+                    ,{field:'fid', title:'场地编号', width:70,hide:true}
+                    ,{field:'act_type', title:'面向群体', width:100,templet: "#buttonTpl"}
+                    ,{field:'start_time', title:'开始时间', width:144, sort: true}
+                    ,{field:'end_time', title:'结束时间', width:144, sort: true}
+                    ,{field:'act_time', title:'发布时间', width:144, sort: true}
+                  ]]
+                  ,page: true
+                  ,id: 'memberReload'
+                });
+
+                // r.render(null, "layuiadmin-form-member");
+                // var src='<option value="">请搜索或直接选择...</option>';
+                // $.ajax({
+                //   url:'/student/list',
+                //   dataType:'json',
+                //   success:function(data){
+                //     $.each(data,function(index,item){
+                //       src+="<option value='"+item.uid+"'>"+item.sduid+item.name+"</option>";
+                //     });
+                //     $('#user').html(src);
+                //     r.render();
+                //   }
+                // });
+
+                r.on("submit(LAY-member-front-submit)", function(e) {
+                  e.field.cid=data[0].cid;
+                  $.ajax({
+                    type: 'POST',
+                    url: "club/addmember",
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(e.field),
+                    success: function (msg) {
+                      if (msg == 1) {
+                        layui.table.reload("memberReload");
+                      }
+                      else if(msg == -1){
+                        layer.msg('该成员已在社');
+                      }
+                      else {
+                        layer.msg('添加失败！请重试');
+                      }
+                    },
+                  });
+
+                })
+
+              })
+            }
+          })
+      };
+    });
+
+    //监听行工具事件
+    table.on("tool(test-table-toolbar)", function(e) {
+      var l = e.data;
+      window.atid=l.atid;
+      "del" === e.event ? layer.confirm("确定删除此类别吗？", function(i) {
+        $.ajax({
+          type: 'POST',
+          url: "activityType/delete",
+          dataType: 'json',
+          contentType: 'application/json',
+          data: JSON.stringify(l),
+          success: function (msg) { // 返回的RequestResult的json对象
+            if (msg == 1) {
+              e.del();layer.close(i);
+            } else {
+              layer.msg('删除失败！请重试');
+            }
+          },
+        });
+
+      }) : "edit" === e.event && i.popup({
+        title: "编辑活动类别",
+        area: ["600px", "420px"],
+        id: "LAY-popup-user-add",
+        success: function(e, i) {
+          t(this.id).render("type/actType/modify", l).done(function() {
+            r.render(null, "layuiadmin-form-useradmin"), r.on("submit(LAY-user-front-submit)", function(e) {
+              e.field.atid=l.atid;
+              $.ajax({
+                type: 'POST',
+                url: "activityType/update",
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(e.field),
+                success: function (msg) {
+                  if (msg == 1) {
+                    layui.table.reload("testReload");
+                  } else {
+                    layer.msg('更新失败！请重试');
+                  }
+                },
+              });
+              layer.close(i);
+
+            })
+          })
+        }
+      })
+    })
+    table.on("tool(member-table)", function(e) {
+      "del" === e.event ? layer.confirm("确定强制踢除该成员吗？", function(i) {
+        $.ajax({
+          type: 'POST',
+          url: "club/delmember",
+          dataType: 'json',
+          contentType: 'application/json',
+          data: JSON.stringify(e.data),
+          success: function (msg) { // 返回的RequestResult的json对象
+            if (msg == 1) {
+              e.del();
+              layer.close(i);
+            } else {
+              layer.msg('操作失败！请重试');
+            }
+          },
+        });
+
+      }): ""
+    })
+    table.on("toolbar(member-table)", function(obj) {
+      switch(obj.event){
+        case 'member-search':                //搜索
+          var str=$("#search-str1").val()
+          table.reload('memberReload', {
+            where: { //设定异步数据接口的额外参数，任意设置
+              str:str
+            }
+            ,page: {
+              curr: 1 //重新从第 1 页开始
+            }
+          }); //只重载数据
+          break;
+        case 'addMember':                //添加成员
+          var str=$("#search-str1").val()
+          table.reload('memberReload', {
+            where: { //设定异步数据接口的额外参数，任意设置
+              str:str
+            }
+            ,page: {
+              curr: 1 //重新从第 1 页开始
+            }
+          });
+      };
+    })
+  });
+</script>

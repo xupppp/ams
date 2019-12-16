@@ -1,0 +1,154 @@
+<body>
+<div class="layui-form layui-form-pane" lay-filter="layuiadmin-form-useradmin" >
+  <div class="layui-form-item">
+    <label class="layui-form-label">活动名</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <input type="text" name="act_name" id="act_name" value="{{ d.params.act_name || '' }}" lay-verify="required" placeholder="请输入活动名" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+<div class="layui-form-item">
+    <label class="layui-form-label">活动类型</label>
+    <div class="layui-input-block">
+        <select name="atid" id="atid" lay-verify="required"  lay-search="" >
+        </select>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">名额</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <input type="text" name="act_numberlimit" id="numberlimit" value="{{ d.params.act_numberlimit || '' }}" lay-verify="required" placeholder="请输入名额" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">场地</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <select name="fid" id="field" lay-verify="required"  lay-search="" >
+        </select>
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">面向群体</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <select name="act_type" id="mo_act_type"  lay-verify="required"  lay-search="" >
+                  <option value="">请搜索或直接选择...</option>
+                  <option value="全部" {{ d.params.act_type === '全部' ? 'selected' : '' }}>全部</option>
+                  <option value="社内" {{ d.params.act_type === '社内' ? 'selected' : '' }}>社内</option>
+        </select>
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">开始时间</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <input type="text" name="start_time" id="timechoose1" value="{{ d.params.start_time || '' }}" lay-verify="datetime" placeholder="请选择开始时间" autocomplete="off" class="layui-input">
+       
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">结束时间</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <input type="text" id="timechoose2" name="end_time" value="{{ d.params.end_time || '' }}" lay-verify="datetime" placeholder="请选择结束时间" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+  
+  <div class="layui-form-item">
+    <label class="layui-form-label">负责人</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <select name="chargeuid" id="charge" lay-verify="required"  lay-search="" >
+        </select>
+      </script>
+    </div>
+  </div>
+  
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">活动内容</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <textarea name="act_contents" required lay-verify="required"class="layui-textarea">{{ d.params.act_contents || '' }}</textarea>
+      </script>
+    </div>
+  </div>
+  
+  <div class="layui-form-item">
+
+      <input type="button" lay-submit lay-filter="LAY-user-front-submit" value="确认" class="layui-btn">
+ 
+  </div>
+  
+</div>
+
+ <script>
+layui.use(['admin', 'form', 'upload', 'laydate'], function(){
+  var $ = layui.$
+  ,form = layui.form
+  ,laydate = layui.laydate
+  ,upload = layui.upload;
+  
+//动态加载下拉框
+  var src='<option value="">请搜索或直接选择...</option>';
+      $.ajax({
+          url:'/field/list',
+          dataType:'json',
+          success:function(data){
+                  $.each(data,function(index,item){
+                      src+="<option value='"+item.fid+"'>"+item.fname+"</option>";
+                  });  
+                  $('#field').html(src);
+                  $('#field').val(parent.fid); //设置默认选中项
+                  form.render();
+          }
+      }); 
+      var src2='<option value="">请搜索或直接选择...</option>';
+      $.ajax({
+          url:'/activityType/list',
+          async:false,
+          dataType:'json',
+          success:function(data){
+                  $.each(data,function(index,item){
+                      src2+="<option value='"+item.atid+"'>"+item.act_type_name+"</option>";
+                  });  
+                  $('#atid').html(src2);
+                  $('#atid').val(parent.atid);
+                  form.render();
+          }
+      });
+      var src3='<option value="">请搜索或直接选择...</option>';
+      $.ajax({
+          url:'/student/list',
+          dataType:'json',
+          success:function(data){
+                  $.each(data,function(index,item){
+                      src3+="<option value='"+item.uid+"'>"+item.sduid+item.name+"</option>";
+                  });  
+                  $('#charge').html(src3);
+                  $('#charge').val(parent.chargeuid); 
+                  form.render();
+          }
+      });
+      
+
+  laydate.render({
+    elem: '#timechoose1'
+    ,type: 'datetime'
+  });
+  
+  laydate.render({
+    elem: '#timechoose2'
+    ,type: 'datetime'
+  });
+
+})
+</script> 
+</body>

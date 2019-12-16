@@ -1,0 +1,332 @@
+<link rel="stylesheet" href="vendor/layui/css/layui.css">
+<script type="text/javascript" src="vendor/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.params.js"></script>
+<script type="text/javascript" src="vendor/layui/layui.js"></script>
+<body style="background: transparent url(img/PTS_Movie_Branding_Background.jpg)no-repeat 0 0;background-attachment: fixed;background-size: cover;">
+<div class="layui-layout layui-layout-admin">
+	<div class="layui-header" style="z-index:9999;position: relative;">
+
+		<!-- 头部区域 -->
+		<ul class="layui-nav" style="padding: 0 200px;">
+			<div class="layui-logo" style="color:white;">AMS-stu</div>
+			<li class="layui-nav-item">
+				<a href="stu-index">首页</a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="#">社团</a>
+				<dl class="layui-nav-child">
+				    <dd>
+						<a href="club-list">社团展示</a>
+					</dd>
+					<dd>
+						<a href="club-build" id="nav-buildclub">创建社团</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="#">活动</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="activity-all-list">校内活动</a>
+					</dd>
+					<dd>
+						<a href="activity-inner-list">社内活动</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="news-all-list">新闻</a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;">我的</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="club-mine">我的社团</a>
+					</dd>
+					<dd>
+						<a href="notice-mine">我的公告</a>
+					</dd>
+					<dd>
+						<a href="myAct">我的活动</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item" id="nav-manager">
+				<a href="javascript:;">管理</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="manageClub">社团管理</a>
+					</dd>
+					<dd>
+						<a href="manageNotice">公告管理</a>
+					</dd>
+					<dd>
+						<a href="addNotice">发布公告</a>
+					</dd>
+					<dd>
+						<a href="manageAct">活动管理</a>
+					</dd>
+					<dd>
+						<a href="applyAct">申请活动</a>
+					</dd>
+		            <dd>
+						<a href="managenews">新闻管理</a>
+					</dd>
+					<dd>
+						<a href="addnews">发布新闻</a>
+					</dd>
+				</dl>
+			 </li>
+		</ul>
+
+		<ul class="layui-nav layui-layout-right">
+			<li class="layui-nav-item layui-hide-xs" lay-unselect>
+				<input type="text" placeholder="搜索..." autocomplete="off" class="layui-input layui-input-search" layadmin-event="serach" lay-action="template/search/keywords=">
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;" id='username'>
+					<img id="userlogo" class="layui-nav-img">
+				</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="userinformation">基本资料</a>
+					</dd>
+					<dd>
+						<a href="setPwd">修改密码</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:void(0);" onclick="loginout()">退出登录</a>
+			</li>
+		</ul>
+
+	</div>
+
+	<!-- 主体内容 -->
+	<div class="layui-body">
+		<div style="margin-right:200px;background-color:white;padding:10px 20px 10px 20px;">
+
+			<fieldset class="layui-elem-field" style="margin-top:30px;">
+				<legend>已发布的新闻</legend>		
+					<div class="layui-row" style="text-align: center;" id="news-fabu"> </div>
+			</fieldset>
+			
+			<fieldset class="layui-elem-field" style="margin-top: 30px;">
+				<legend>待审核的新闻</legend>
+				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                    <legend style="font-size:16px;color:#c2c2c2">发布申请</legend>
+                </fieldset>
+				<div class="layui-fluid">
+					<div class="layui-row" style="text-align: center;" id="news-fabudaishen">
+					
+				</div>
+				</div>
+				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                    <legend style="font-size:16px;color:#c2c2c2">修改申请</legend>
+                </fieldset>
+                <div class="layui-fluid">
+					<div class="layui-row" style="text-align: center;" id="news-xiugaidaishen"></div>				
+				</div>	
+			</fieldset>
+			
+			<fieldset class="layui-elem-field" style="margin-top: 30px;">
+				<legend>被驳回的新闻</legend>
+				<div class="layui-fluid">
+
+					<div class="layui-row" style="text-align: center;" id="news-bohui"></div>
+					
+				</div>
+			</fieldset>
+
+		</div>
+	</div>
+
+</div>
+</body>
+<script>
+	layui.use(['element','layer'], function() {
+		var $ = layui.jquery,
+		    layer=layui.layer;
+			element = layui.element; 
+			//显示菜单栏用户信息
+			$.ajax({
+			    type: 'GET',
+			    url: "login/getLoginUser",
+			    success: function (data) { 
+			    	if(data.type!="学生"){
+			    		loginout();
+			    	}
+			    	$("#username").append(data.name);
+			    	$("#userlogo").attr('src',data.user_logo);
+			    }
+			});
+			//是否显示管理菜单
+			$.ajax({
+			    type: 'GET',
+			    url: "login/president",
+			    success: function (msg) { 
+			        if(msg==0){
+			        	$("#nav-manager").hide();
+			        }
+			        else{
+			        	$("#nav-buildclub").hide();
+			        }
+			    }
+			});
+			//退出登录
+			 loginout=function(){
+				$.ajax({
+	 			    type: 'GET',
+	 			    url: "login/logout",
+	 			    success: function (msg) { 
+	 			        if(msg==1){
+	 			        	layer.msg('退出成功，正在跳转......', {icon: 6});
+		                    setTimeout(function () {
+		                        window.location.href = "stu-login";
+		                    }, 2000);
+	 			        }
+	 			        else{
+	 			        	layer.msg('退出错误，请重试', {icon: 5});
+	 			        }
+	 			    }
+	 			});
+			}
+		//监听导航点击
+		element.on('nav(demo)', function(elem) {
+			//console.log(elem)
+			layer.msg(elem.text());
+		});
+		//获取当前用户uid
+		var uid=0;
+		$.ajax({
+			type: 'GET',
+			url: "login/getLogin",
+			async:false,
+			success: function(data) {
+				uid=data;
+			}
+		});
+		//加载已发布新闻
+		$.ajax({
+			type: 'GET',
+			url: "news/selectByClub?uid="+uid+"&news_state=已发布",
+			success: function(data) {
+				if(data[0]==null){
+					var str="<div style='padding-bottom:15px;color:#d2d2d2'>还没有此类别的新闻～</div>"
+					$("#news-fabu").append(str);
+				}
+				else{
+				$.each(data, function(index, item){
+					var newstitle=$("<div class='layui-card-header' style='font-size:17px;color:#1E9FFF;font-weight:550;margin-top:15px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'></div>").text(item.news_title);
+					var contents=$("<div class='layui-card-body' style='height:65px;overflow: hidden;display:-webkit-box; -webkit-line-clamp:3;-webkit-box-orient: vertical;'></div>").text(item.news_contents);
+					var btn=$("<div style='margin-bottom:10px; margin-top:10px;padding-bottom:10px;'><button type='button' onclick='del("+item.newsid+")' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-delete' style='color:#1E9FFF;'></i></button><button type='button' onclick='edit("+item.newsid+",1)' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-edit' style='color:#1E9FFF;'></i></button><button type='button' onclick='xiangqing("+item.newsid+",1)' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-more' style='color:#1E9FFF;'></i></button></div>");
+					var card=$("<div class='layui-card' style='background-color: #F2F2F2;'>").append(newstitle,contents,btn);
+					var t=$("<div class='layui-col-md3' style='padding: 10px;'>").append(card);
+					$("#news-fabu").append(t);
+				})
+			}
+			}
+		});
+		//加载发布待审新闻
+		$.ajax({
+			type: 'GET',
+			url: "news/selectByClub?uid="+uid+"&news_state=发布待审",
+			success: function(data) {
+				if(data[0]==null){
+					var str="<div style='padding-bottom:15px;color:#d2d2d2'>还没有此类别的新闻～</div>"
+					$("#news-fabudaishen").append(str);
+				}
+				else{
+				$.each(data, function(index, item){
+					var newstitle=$("<div class='layui-card-header' style='font-size:17px;color:#1E9FFF;font-weight:550;margin-top:15px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'></div>").text(item.news_title);
+					var contents=$("<div class='layui-card-body' style='height:65px;overflow: hidden;display:-webkit-box; -webkit-line-clamp:3;-webkit-box-orient: vertical;'></div>").text(item.news_contents);
+					var btn=$("<div style='margin-bottom:10px; margin-top:10px;padding-bottom:10px;'><button type='button' onclick='del("+item.newsid+")' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-delete' style='color:#1E9FFF;'></i></button><button type='button' onclick='edit("+item.newsid+",2)' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-edit' style='color:#1E9FFF;'></i></button><button type='button' onclick='xiangqing("+item.newsid+",1)' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-more' style='color:#1E9FFF;'></i></button></div>");
+					var card=$("<div class='layui-card' style='background-color: #F2F2F2;'>").append(newstitle,contents,btn);
+					var t=$("<div class='layui-col-md3' style='padding: 10px;'>").append(card);
+					$("#news-fabudaishen").append(t);
+				})
+			}
+			}
+		});
+		//加载修改待审新闻
+		$.ajax({
+			type: 'GET',
+			url: "news/selectByClub?uid="+uid+"&news_state=修改待审",
+			success: function(data) {
+				if(data[0]==null){
+					var str="<div style='padding-bottom:15px;color:#d2d2d2'>还没有此类别的新闻～</div>"
+					$("#news-xiugaidaishen").append(str);
+				}
+				else{
+				$.each(data, function(index, item){
+					var newstitle=$("<div class='layui-card-header' style='font-size:17px;color:#1E9FFF;font-weight:550;margin-top:15px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'></div>").text(item.news_title);
+					var contents=$("<div class='layui-card-body' style='height:65px;overflow: hidden;display:-webkit-box; -webkit-line-clamp:3;-webkit-box-orient: vertical;'></div>").text(item.news_contents);
+					var btn=$("<div style='margin-bottom:10px; margin-top:10px;padding-bottom:10px;'><button type='button' onclick='del("+item.newsid+")' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-delete' style='color:#1E9FFF;'></i></button><button type='button' onclick='edit("+item.newsid+",1)' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-edit' style='color:#1E9FFF;'></i></button><button type='button' onclick='xiangqing("+item.newsid+",1)' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-more' style='color:#1E9FFF;'></i></button></div>");
+					var card=$("<div class='layui-card' style='background-color: #F2F2F2;'>").append(newstitle,contents,btn);
+					var t=$("<div class='layui-col-md3' style='padding: 10px;'>").append(card);
+					$("#news-xiugaidaishen").append(t);
+				})
+			}
+			}
+		});
+		//加载被驳回新闻
+		$.ajax({
+			type: 'GET',
+			url: "news/selectByClub?uid="+uid+"&news_state=已驳回",
+			success: function(data) {
+				if(data[0]==null){
+					var str="<div style='padding-bottom:15px;color:#d2d2d2'>还没有此类别的活动～</div>"
+					$("#news-bohui").append(str);
+				}
+				else{
+				$.each(data, function(index, item){
+					var newstitle=$("<div class='layui-card-header' style='font-size:17px;color:#1E9FFF;font-weight:550;margin-top:15px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'></div>").text(item.news_title);
+					var contents=$("<div class='layui-card-body' style='height:65px;overflow: hidden;display:-webkit-box; -webkit-line-clamp:3;-webkit-box-orient: vertical;'></div>").text(item.news_contents);
+					var btn=$("<div style='margin-bottom:10px; margin-top:10px;padding-bottom:10px;'><button type='button' onclick='del("+item.newsid+")' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-delete' style='color:#1E9FFF;'></i></button><button type='button' onclick='edit("+item.newsid+",3)' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-edit' style='color:#1E9FFF;'></i></button><button type='button' onclick='reason(\" "+item.news_remark + "\")' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-help' style='color:#1E9FFF;'></i></button><button type='button' onclick='xiangqing("+item.newsid+",1)' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-more' style='color:#1E9FFF;'></i></button></div>");
+					var card=$("<div class='layui-card' style='background-color: #F2F2F2;'>").append(newstitle,contents,btn);
+					var t=$("<div class='layui-col-md3' style='padding: 10px;'>").append(card);
+					$("#news-bohui").append(t);
+				})
+			}
+			}
+		});
+		//删除新闻
+		del=function(newsid){
+			var l={newsid:newsid};
+			layer.confirm('确定要删除该新闻吗？', {
+				  btn: ['删除','再想想']
+				}, function(){
+					$.ajax({
+			              type: 'POST',
+			              url: "news/delete",
+			              dataType: 'json',
+			              contentType: 'application/json',
+			              data: JSON.stringify(l),
+			              success: function (msg) { 
+			                  if (msg == 1) {
+			                	  layer.msg('删除成功');
+			                	  window.location.reload();
+			                  } else {
+			                      layer.msg('删除失败！请重试');
+			                  }
+			              },
+			          });
+				}, function(){				  
+				});			
+		}
+		//修改
+		edit=function(newsid,type){
+			window.location.href = "modifyNews?newsid="+newsid+"&type="+type;
+		}
+		//查看被驳回原因
+		reason=function(news_remark){
+			layer.alert(news_remark,{title:"新闻被驳回原因"});
+		}
+		//查看详情
+		xiangqing=function(newsid){
+			window.location.href = "news-info?newsid="+newsid;
+		}
+			
+	});
+</script>

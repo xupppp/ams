@@ -1,0 +1,555 @@
+<link rel="stylesheet" href="vendor/layui/css/layui.css">
+<script type="text/javascript" src="vendor/layui/layui.js"></script>
+<link rel="stylesheet" href="vendor/layui/css/stu-index.css">
+<body style="background: transparent url(img/PTS_Movie_Branding_Background.jpg)no-repeat 0 0;background-attachment: fixed;background-size: cover;">
+<div class="layui-layout layui-layout-admin">
+	<div class="layui-header" style="z-index:9999;position: relative;">
+
+		<!-- 头部区域 -->
+		<ul class="layui-nav" style="padding: 0 200px;">
+			<div class="layui-logo" style="color:white;">AMS-stu</div>
+			<li class="layui-nav-item">
+				<a href="stu-index">首页</a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="#">社团</a>
+				<dl class="layui-nav-child">
+				    <dd>
+						<a href="club-list">社团展示</a>
+					</dd>
+					<dd>
+						<a href="club-build" id="nav-buildclub">创建社团</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="#">活动</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="activity-all-list">校内活动</a>
+					</dd>
+					<dd>
+						<a href="activity-inner-list">社内活动</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="news-all-list">新闻</a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;">我的</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="club-mine">我的社团</a>
+					</dd>
+					<dd>
+						<a href="notice-mine">我的公告</a>
+					</dd>
+					<dd>
+						<a href="myAct">我的活动</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item" id="nav-manager">
+				<a href="javascript:;">管理</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="manageClub">社团管理</a>
+					</dd>
+					<dd>
+						<a href="manageNotice">公告管理</a>
+					</dd>
+					<dd>
+						<a href="addNotice">发布公告</a>
+					</dd>
+					<dd>
+						<a href="manageAct">活动管理</a>
+					</dd>
+					<dd>
+						<a href="applyAct">申请活动</a>
+					</dd>
+		            <dd>
+						<a href="managenews">新闻管理</a>
+					</dd>
+					<dd>
+						<a href="addnews">发布新闻</a>
+					</dd>
+				</dl>
+			 </li>
+		</ul>
+
+		<ul class="layui-nav layui-layout-right">
+			<li class="layui-nav-item layui-hide-xs" lay-unselect>
+				<input type="text" placeholder="搜索..." autocomplete="off" class="layui-input layui-input-search" layadmin-event="serach" lay-action="template/search/keywords=">
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;" id='username'>
+					<img id="userlogo" class="layui-nav-img">
+				</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="userinformation">基本资料</a>
+					</dd>
+					<dd>
+						<a href="setPwd">修改密码</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:void(0);" onclick="loginout()">退出登录</a>
+			</li>
+		</ul>
+
+	</div> 
+
+	<!-- 主体内容 -->
+	<div class="layui-body">
+
+		<div style="margin-right:200px;background-color:white;padding:10px 20px 10px 20px;">
+
+			<div class="layui-carousel" id="test" lay-filter="test" style="margin-top: 30px;border-radius:25px;">
+				<div carousel-item="" style="border-radius:25px;">
+					<div><img src="img/bg1.jpg" style="width:100%;height:100%"></div>
+					<div><img src="img/bg2.png" style="width:100%;height:100%"></div>
+				</div>
+			</div>
+
+			<fieldset class="layui-elem-field" style="margin-top: 30px;border-radius:25px;padding:0 20px 0 20px;border-width:2px;">
+
+				<legend style="font-size:22px;font-weight:500;color:#666666;">优选社团</legend>
+					<div style="text-align:center;">
+					<div class="layui-col-md4" style="padding:0 10px 10px 10px;">
+						<div class="layui-card" style="margin-bottom: 20px;background-color:#F5F5F5;border-radius:25px;">
+						    <div class="top-cid" style="display:none;"></div>
+							<div class="layui-card-header" id="top1-cname" style="font-size: 18px;margin-top:20px;background-color:#A27E7E;color:white;border-top-left-radius:25px;border-top-right-radius:25px;">
+							</div>
+							<div class="layui-card-body">
+								<img id="top1-logo"></img>
+								<div id="top1-contents">
+								</div>
+							</div>
+							<div class="site-demo-button" id="layerDemo">
+								<button id="joinNow1" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-radius layui-btn-fluid" style="margin-bottom:10px;width:100px;background-color:#A27E7E;">加 入 我 们</button>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4" style="padding:0 10px 10px 10px;">
+						<div class="layui-card" style="background-color:#F5F5F5;border-radius:25px;">
+						    <div  class="top-cid" style="display:none;"></div>
+							<div class="layui-card-header" id="top2-cname" style="font-size: 18px;margin-top:20px;background-color:#96A48B;color:white;border-top-left-radius:25px;border-top-right-radius:25px;">
+							</div>
+							<div class="layui-card-body">
+								<img id="top2-logo"></img>
+								<div id="top2-contents">
+								</div>
+							</div>
+							<div class="site-demo-button" id="layerDemo">
+								<button id="joinNow2" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-radius layui-btn-fluid" style="margin-bottom:10px;width:100px;background-color:#96A48B;">加 入 我 们</button>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4" style="padding:0 10px 10px 10px;">
+						<div class="layui-card" style="background-color:#F5F5F5;border-radius:25px;">
+						    <div  class="top-cid" style="display:none;"></div>
+							<div class="layui-card-header" id="top3-cname" style="font-size: 18px;margin-top:20px;background-color:#8696A7;color:white;border-top-left-radius:25px;border-top-right-radius:25px;">
+							</div>
+							<div class="layui-card-body">
+								<img id="top3-logo"></img>
+								<div id="top3-contents">
+								</div>
+							</div>
+							<div class="site-demo-button" id="layerDemo">
+								<button id="joinNow3" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-radius layui-btn-fluid" style="margin-bottom:10px;width:100px;background-color:#8696A7;">加 入 我 们</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</fieldset>
+
+			<fieldset class="layui-elem-field" style="margin-top: 30px;border-radius:25px;padding:0 10px 0 10px;border-width:2px;">
+				<legend style="font-size:22px;font-weight:500;color:#666666;">新闻速递</legend>
+				<div class="layui-field-box">
+
+					<div class="layui-row" id='news-list'>
+
+
+
+					</div>
+
+				</div>
+			</fieldset>
+
+			<fieldset class="layui-elem-field" style="margin-top: 30px;border-radius:25px;padding:0 20px 0 20px;border-width:2px;">
+				<legend style="font-size:22px;font-weight:500;color:#666666;">热门活动</legend>
+				<div class="layui-field-box">
+					<div class="layui-row" style="text-align: left;font-size: 16px;" id='act-list'>				
+						
+						
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset class="layui-elem-field" style="margin-top: 30px;border-radius:25px;padding:0 20px 0 20px;border-width:2px;">
+				<legend style="font-size:22px;font-weight:500;color:#666666;">友情链接</legend>
+				<div class="layui-field-box">
+					<div class="layui-row" style="text-align: center;font-size: 16px;">
+						
+						<div class="layui-col-xs3">
+							<div class="layui-card">
+								<div class="layui-card-body">
+									<a href="bb.zucc.edu.cn">bb平台</a>
+								</div>
+							</div>
+						</div>
+						
+						<div class="layui-col-xs3">
+							<div class="layui-card">
+								<div class="layui-card-body">
+									<a href="http://www.zucc.edu.cn">浙江大学城市学院官网</a>
+								</div>
+							</div>
+						</div>
+						
+						<div class="layui-col-xs3">
+							<div class="layui-card">
+								<div class="layui-card-body">
+									<a href="jsxy.zucc.edu.cn">计算学院</a>
+								</div>
+							</div>
+						</div>
+						
+						<div class="layui-col-xs3">
+							<div class="layui-card">
+								<div class="layui-card-body">
+									<a href="admin-login">社团管理后台</a>
+								</div>
+							</div>
+						</div>
+						
+						
+						
+					</div>
+				</div>
+			</fieldset>
+
+		</div>
+
+	</div>
+
+</div>
+</body>
+<script>
+	layui.use('element', function() {
+		var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+
+		//监听导航点击
+		element.on('nav(demo)', function(elem) {
+			//console.log(elem)
+			layer.msg(elem.text());
+		});
+	});
+</script>
+<script>
+	layui.use(['util', 'laydate', 'layer'], function() {
+		var util = layui.util,
+			laydate = layui.laydate,
+			layer = layui.layer;
+	})
+</script>
+<script>
+	layui.use(['laypage', 'layer', 'element', 'carousel', 'form', 'util'], function() {
+		var laypage = layui.laypage,
+		layer = layui.layer,
+		element = layui.element,
+		carousel = layui.carousel,
+		form = layui.form,
+		util = layui.util,
+		$ = layui.$;
+		//显示菜单栏用户信息
+		$.ajax({
+		    type: 'GET',
+		    url: "login/getLoginUser",
+		    success: function (data) { 
+		    	if(data.type!="学生"){
+		    		loginout();
+		    	}
+		    	$("#username").append(data.name);
+		    	$("#userlogo").attr('src',data.user_logo);
+		    }
+		});
+		//是否显示管理菜单
+		$.ajax({
+			    type: 'GET',
+			    url: "login/president",
+			    success: function (msg) { 
+			        if(msg==0){
+			        	$("#nav-manager").hide();
+			        }
+			        else{
+			        	$("#nav-buildclub").hide();
+			        }
+			    }
+			});
+		//退出登录
+		 loginout=function(){
+			$.ajax({
+ 			    type: 'GET',
+ 			    url: "login/logout",
+ 			    success: function (msg) { 
+ 			        if(msg==1){
+ 			        	layer.msg('正在跳转......', {icon: 6});
+	                    setTimeout(function () {
+	                        window.location.href = "stu-login";
+	                    }, 2000);
+ 			        }
+ 			        else{
+ 			        	layer.msg('退出错误，请重试', {icon: 5});
+ 			        }
+ 			    }
+ 			});
+		}
+
+		//图片轮播
+		carousel.render({
+			elem: '#test',
+			width: '100%',
+			height: '400px',
+			interval: 3000
+		});
+		
+		//加载top3数据
+		var top1cid;
+        var top2cid;
+        var top3cid;
+		$.ajax({
+			type: 'GET',
+			url: "club/selectGood",
+			async: false,
+			success: function(data) {
+				$.each(data, function(index, item) {
+					if(index == 0) {
+						top1cid=item.cid;
+						$("#top1-cname").text(item.cname);
+						$("#top1-contents").text(item.club_contents);
+						$("#top1-logo").attr("src", item.club_logo)
+					} else if(index == 1) {
+						top2cid=item.cid;
+						$("#top2-cname").text(item.cname);
+						$("#top2-contents").text(item.club_contents);
+						$("#top2-logo").attr("src", item.club_logo)
+					} else {
+						top3cid=item.cid;
+						$("#top3-cname").text(item.cname);
+						$("#top3-contents").text(item.club_contents);
+						$("#top3-logo").attr("src", item.club_logo)
+					}
+				})
+			},
+		});
+		
+		$(document).on('click',"#joinNow1",function(){
+			layer.prompt({
+				formType: 2,
+				value: '请认真填写入社理由...',
+				title: '入社理由',
+				btn:['提交申请','再想想'],
+				maxlength: 50,
+				area: ['300px', '150px'] //自定义文本域宽高
+			}, function(value, index, elem) {
+				var str={cid:top1cid,uid:-1,reason:value};
+				$.ajax({
+		              type: 'POST',
+		              url: "club/addmemberStu",
+		              dataType: 'json',
+		              contentType: 'application/json',
+		              data: JSON.stringify(str),
+		              success: function (msg) { 
+		                  if (msg == 1) {
+		                	  layer.msg("申请成功！请等待审核结果")
+		                  } 
+		                  else if(msg == -1){
+		                      layer.msg('您已是该社团成员');
+		                  }
+		                  else {
+		                      layer.msg('操作失败！请重试');
+		                  }
+		              },
+		          });
+				layer.close(index);
+			}, function(){
+				  
+			});
+	    });
+		
+		$(document).on('click',"#joinNow2",function(){
+			layer.prompt({
+				formType: 2,
+				value: '请认真填写入社理由...',
+				title: '入社理由',
+				btn:['提交申请','再想想'],
+				maxlength: 50,
+				area: ['300px', '150px'] //自定义文本域宽高
+			}, function(value, index, elem) {
+				var str={cid:top2cid,uid:-1,reason:value};
+				$.ajax({
+		              type: 'POST',
+		              url: "club/addmemberStu",
+		              dataType: 'json',
+		              contentType: 'application/json',
+		              data: JSON.stringify(str),
+		              success: function (msg) { 
+		                  if (msg == 1) {
+		                	  layer.msg("申请成功！请等待审核结果")
+		                  } 
+		                  else if(msg == -1){
+		                      layer.msg('您已是该社团成员');
+		                  }
+		                  else {
+		                      layer.msg('操作失败！请重试');
+		                  }
+		              },
+		          });
+				layer.close(index);
+			}, function(){
+				  
+			});
+	    });
+		
+		$(document).on('click',"#joinNow3",function(){
+			layer.prompt({
+				formType: 2,
+				value: '请认真填写入社理由...',
+				title: '入社理由',
+				btn:['提交申请','再想想'],
+				maxlength: 50,
+				area: ['300px', '150px'] //自定义文本域宽高
+			}, function(value, index, elem) {
+				var str={cid:top3cid,uid:-1,reason:value};
+				$.ajax({
+		              type: 'POST',
+		              url: "club/addmemberStu",
+		              dataType: 'json',
+		              contentType: 'application/json',
+		              data: JSON.stringify(str),
+		              success: function (msg) { 
+		                  if (msg == 1) {
+		                	  layer.msg("申请成功！请等待审核结果")
+		                  } 
+		                  else if(msg == -1){
+		                      layer.msg('您已是该社团成员');
+		                  }
+		                  else {
+		                      layer.msg('操作失败！请重试');
+		                  }
+		              },
+		          });
+				layer.close(index);
+			}, function(){
+				  
+			});
+	    });
+
+
+		//加载新闻
+		$.ajax({
+			type: 'GET',
+			url: "news/selectIndex?num=4",
+			async: false,
+			success: function(data) {
+				$.each(data, function(index, item) {
+					var title=$('<div class="layui-card-header" style="font-size: 16px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"></div>').text(item.news_title);
+					var src= item.news_img.substring(0, item.news_img.length - 1);
+					var srcs = src.split(';');
+					var img=$('<img style="width:180px;height:120px;">').attr('src',srcs[0]);
+					var lianjie=$('<a href="news-info?newsid='+item.newsid+'"></a>').append(img);
+					var imgrow=$('<div class="layui-row"></div>').append(lianjie);
+					var contents=$('<div class="grid-demo"></div>').text(item.news_contents);
+					var contentsrow=$('<div class="layui-row" style="height:45px;font-size: 14px;color: darkgrey;margin-top:10px;overflow: hidden;display:-webkit-box; -webkit-line-clamp:3;-webkit-box-orient: vertical;"></div').append(contents);
+					var body=$('<div class="layui-card-body"></div').append(imgrow,contentsrow);
+					var card=$('<div class="layui-card"></div>').append(title,body);
+					var t=$('<div class="layui-col-xs3" style="padding:0 10px 0 10px;"></div').append(card);
+					$('#news-list').append(t);
+				})				
+			},
+		});
+		
+		//加载活动
+		$.ajax({
+			type: 'GET',
+			url: "activity/selectIndex?num=3",
+			async: false,
+			success: function(data) {
+				$.each(data, function(index, item) {
+            		if(item.act_name!=null){
+            	    var num=$("<span class='layui-badge layui-bg-green'></span>").text("已有"+item.signnum+"人参与");
+            	    var numrow=$("<div class='layui-row' style='margin-top:5px;text-align:center'></div>").append(num);
+            		var contentsstr=$("<div class='layui-col-md12' style='overflow: hidden;display:-webkit-box; -webkit-line-clamp:3;-webkit-box-orient: vertical;color:#2F4056;'></div>").text(item.act_contents);
+            		var contents=$("<div class='layui-row layui-col-space5' style='margin-top:5px;height:70px;'></div>").append(contentsstr);
+            		var btn="<div class='layui-row layui-col-space15' style='margin-top:15px;'><div class='layui-col-md2 layui-col-md-offset3 '><button type='button' class='layui-btn layui-btn-sm  layui-btn-radius' style='background:#96A48B' onclick='baoming("+item.actid+")'>立即报名</button></div><div class='layui-col-md2 layui-col-md-offset1'><button type='button' class='layui-btn layui-btn-sm layui-btn-primary layui-btn-radius' onclick='xiangqing("+item.actid+")'>查看详情</button></div></div>";
+            		var body=$("<div class='layui-card-body cardbody' style='background:#f7f7f7; height:160px;border-radius:0 0 30px 30px;'></div>").append(numrow,contents,btn);
+            		var header=$("<div  class='layui-card-header' style='border-radius:30px 30px 0 0;padding-left:30px;font-size:16px;background:#96A48B;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;color:white;'></div>").text(item.act_name);
+            		var card=$("<div class='card'></div>").append(header,body);
+            		var t=$("<div class='layui-col-md4' style='padding:5px;'></div>").append(card);
+            		$("#act-list").append(t);
+            		}
+				})				
+			},
+		});
+   	    //报名
+ 		baoming=function(actid){
+   	    	var signnum;
+ 			$.ajax({
+ 			    type: 'GET',
+ 			    async:false,    //设置动态加载为false，不然success函数中无法给外部变量赋值
+ 			    url: "activity/countSign?actid="+actid,
+ 			    success: function (count) { 
+ 			        signnum=count;   //获取已报名人数
+ 			    },
+ 			});
+ 			var actlimit; 
+ 			$.ajax({            
+ 			   type: 'GET',
+ 			   url: "activity/selectOne?actid="+actid,
+ 			   async:false,
+ 			   success: function (data) { 
+ 				 actlimit=data.act_numberlimit; //获取活动名额			   	
+ 			   },
+ 			});
+ 			if(signnum==actlimit){
+ 				layer.msg("该活动报名人数已满，再看看吧～");
+ 				return false;
+ 			}
+			layer.confirm('确定要直接报名该活动吗？', {
+				  btn: ['报名','再看看']
+				}, function(){
+					var str={actid:actid,uid:-1};
+					$.ajax({
+			              type: 'POST',
+			              url: "activity/addSign",
+			              dataType: 'json',
+			              contentType: 'application/json',
+			              data: JSON.stringify(str),
+			              success: function (msg) { 
+			                  if (msg == 1) {
+			                	  layer.msg("报名成功！")
+			                  } 
+			                  else if(msg == -1){
+			                      layer.msg('您已报名该活动');
+			                  }
+			                  else {
+			                      layer.msg('操作失败！请重试');
+			                  }
+			              },
+			          });
+				}, function(){
+				  
+				});
+		}  
+   	    //查看详情，跳转页面并传递参数actid
+ 		xiangqing=function(actid){
+ 			window.location.href = "activity-info?actid="+actid+"&type=1";
+		} 
+
+	});
+</script>

@@ -1,0 +1,14 @@
+<div class="layui-form layui-form-pane" lay-filter="layuiadmin-form-actSignAdd" >
+<div class="layui-inline">
+    <label class="layui-form-label">学号/姓名</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <select name="uid" id="add-student" lay-verify="required"  lay-search="" >
+        </select>
+      </script>
+    </div>
+    <input type="button" lay-submit lay-filter="LAY-actsign-front-submit" value="添加" class="layui-btn">
+</div>
+</div>
+<table class="layui-hide" id="actSign-table" lay-filter="actSign-table"></table>
+

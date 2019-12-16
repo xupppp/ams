@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ams.mapper.FieldMapper">
+
+<select id="listAll"  resultType="com.ams.entity.Field">
+    select * from tbl_field where f_state!='已删除'    
+</select>
+
+<select id="selectOne" parameterType="java.lang.Integer" resultType="com.ams.entity.Field">
+    select * from tbl_field where fid=#{fid}    
+</select>
+
+</mapper>

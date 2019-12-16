@@ -1,0 +1,185 @@
+
+<title>添加活动</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>活动</cite></a>
+    <a><cite>添加</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-header">活动添加表</div>
+    <div class="layui-card-body" style="padding: 15px;">
+<div class="layui-form layui-form-pane" lay-filter="layuiadmin-form-useradmin" >
+  <div class="layui-form-item">
+    <label class="layui-form-label">活动名</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <input type="text" name="act_name" id="act_name"  lay-verify="required" placeholder="请输入活动名" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">活动类型</label>
+    <div class="layui-input-block">
+        <select name="atid" id="atid" lay-verify="required"  lay-search="" >
+        </select>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">名额</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <input type="text" name="act_numberlimit" id="numberlimit"  lay-verify="required" placeholder="请输入名额" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">场地</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <select name="fid" id="field" lay-verify="required"  lay-search="" >
+        </select>
+      </script>
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">开始时间</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <input type="text" name="start_time" id="timechoose1"  lay-verify="datetime"  placeholder="请选择开始时间" autocomplete="off" class="layui-input">
+       
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">结束时间</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <input type="text" id="timechoose2" name="end_time"  lay-verify="datetime" placeholder="请选择结束时间" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+  
+  <div class="layui-form-item">
+    <label class="layui-form-label">负责人</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <select name="chargeuid" id="charge" lay-verify="required"  lay-search="" >
+        </select>
+      </script>
+    </div>
+  </div>
+  
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">活动内容</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <textarea name="act_contents" required lay-verify="required"class="layui-textarea"></textarea>
+      </script>
+    </div>
+  </div>
+  
+  <div class="layui-form-item">
+
+      <input type="button" lay-submit lay-filter="LAY-user-front-submit" value="确认" class="layui-btn">
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+ 
+  </div>
+  
+</div>
+    </div>
+  </div>
+</div>
+
+<script>
+layui.use(['admin', 'form', 'upload', 'laydate'], function(){
+  var $ = layui.$
+  ,form = layui.form
+  ,laydate = layui.laydate
+  ,upload = layui.upload;
+  
+//动态加载下拉框
+  var src='<option value="">请搜索或直接选择...</option>';
+      $.ajax({
+          url:'/field/list',
+          dataType:'json',
+          success:function(data){
+                  $.each(data,function(index,item){
+                      src+="<option value='"+item.fid+"'>"+item.fname+"</option>";
+                  });  
+                  $('#field').html(src);
+                  form.render();
+          }
+      });  
+      var src2='<option value="">请搜索或直接选择...</option>';
+      $.ajax({
+          url:'/activityType/list',
+          async:false,
+          dataType:'json',
+          success:function(data){
+                  $.each(data,function(index,item){
+                      src2+="<option value='"+item.atid+"'>"+item.act_type_name+"</option>";
+                  });  
+                  $('#atid').html(src2);
+                  
+                  form.render();
+          }
+      });
+      var src3='<option value="">请搜索或直接选择...</option>';
+      $.ajax({
+          url:'/student/list',
+          dataType:'json',
+          success:function(data){
+                  $.each(data,function(index,item){
+                      src3+="<option value='"+item.uid+"'>"+item.sduid+item.name+"</option>";
+                  });  
+                  $('#charge').html(src3);
+                  form.render();
+          }
+      });
+
+  laydate.render({
+    elem: '#timechoose1'
+    ,type: 'datetime'
+  });
+  
+  laydate.render({
+    elem: '#timechoose2'
+    ,type: 'datetime'
+  });
+  
+  form.on("submit(LAY-user-front-submit)", function(e) {
+	  e.field.act_type="全部";
+	  e.field.act_state="已发布";
+	  e.field.uid=-1;
+		$.ajax({
+            type: 'POST',
+            url: "activity/add",
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(e.field),
+            success: function (msg) { 
+                if (msg == 1) {
+                	layer.msg('添加活动成功');
+                } 
+                else if(msg==-1){
+              	  layer.alert('该时段场地已被申请使用！');
+                }
+                else if(msg==-2){
+	              	  layer.alert('活动人数超过了该场地最多容纳人数');
+	                }
+                else {
+                    layer.msg('添加失败！请重试');
+                }
+            },
+        }); 
+		
+	})
+
+})
+</script> 

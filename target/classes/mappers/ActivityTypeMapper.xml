@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ams.mapper.ActivityTypeMapper">
+
+    <select id="list" parameterType="map" resultType="com.ams.entity.ActivityType">
+        SELECT * FROM tbl_act_type where act_type_state='可用'
+    </select>
+   <select id="countByActType" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT count(*) FROM tbl_act_type where  act_type_state='可用'
+       <if test="str != null">
+           and (act_type_name like "%"#{str}"%" )
+       </if>
+    </select>
+
+    <select id="selectByActType" parameterType="map" resultType="com.ams.entity.ActivityType">
+        SELECT * FROM tbl_act_type WHERE act_type_state='可用'
+        <if test="str != null">
+            and (act_type_name like "%"#{str}"%" )
+        </if>
+        limit ${offset},${limit}
+    </select>
+    <update id="updateByAtid"  parameterType="com.ams.entity.ActivityType">
+    update tbl_act_type
+    <set>
+    <if test="activityType.act_type_name != null">
+        act_type_name = #{activityType.act_type_name,jdbcType=VARCHAR},
+    </if>
+    <if test="activityType.act_type_state != null">
+        act_type_state = #{activityType.act_type_state,jdbcType=VARCHAR},
+    </if>
+    </set>
+        where atid=#{activityType.atid}
+    </update>
+    <insert id="insertByActType" useGeneratedKeys="true" keyProperty="atid" parameterType="com.ams.entity.ActivityType">
+        insert into tbl_act_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="act_type_name != null">
+                act_type_name,
+            </if>
+
+            <if test="act_type_state != null">
+                act_type_state,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="act_type_name != null">
+                #{act_type_name,jdbcType=VARCHAR},
+            </if>
+            <if test="act_type_state != null">
+                #{act_type_state,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>

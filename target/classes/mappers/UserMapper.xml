@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ams.mapper.UserMapper">
+
+  <resultMap id="userMap" type="com.ams.entity.User">
+    <id column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="sduid" jdbcType="VARCHAR" property="sduid" />
+    <result column="emid" jdbcType="VARCHAR" property="emid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="pwd" jdbcType="VARCHAR" property="pwd" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="major" jdbcType="VARCHAR" property="major" />
+    <result column="class_num" jdbcType="VARCHAR" property="class_num" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="user_logo" jdbcType="VARCHAR" property="user_logo" />
+    <result column="user_state" jdbcType="VARCHAR" property="user_state" />
+  </resultMap>
+  
+  <select id="selectUserByLogin" parameterType="com.ams.entity.User" resultMap="userMap">
+      select * from tbl_user where
+      <if test="type == '管理员'">
+        emid = #{emid}
+      </if>
+      <if test="type == '学生'">
+        sduid = #{sduid}
+      </if>
+      and pwd=#{pwd}
+  </select>
+  
+  <select id="selectUserByUid" parameterType="java.lang.Integer" resultMap="userMap">
+      select * from tbl_user where uid=#{uid}
+  </select>
+  
+  <select id="selectUserByEmid" parameterType="java.lang.String" resultMap="userMap">
+      select * from tbl_user where emid=#{emid}
+  </select>
+  
+  <select id="selectByEntity" parameterType="com.ams.entity.User" resultType="com.ams.entity.User">
+      select * from tbl_user where user_state!="回收"
+          <if test="emid != null">
+              and emid = #{emid,jdbcType=VARCHAR}
+          </if>
+          <if test="sduid != null">
+              and sduid = #{sduid,jdbcType=VARCHAR}
+          </if>
+          <if test="name != null">
+              and name = #{name,jdbcType=VARCHAR}
+          </if>
+          <if test="pwd != null">
+              and pwd = #{pwd,jdbcType=VARCHAR}
+          </if>
+          <if test="type != null">
+              and type = #{type,jdbcType=VARCHAR}
+          </if>
+          <if test="major != null">
+              and major = #{major,jdbcType=VARCHAR}
+          </if>
+          <if test="class_num != null">
+              and type = #{class_num,jdbcType=VARCHAR}
+          </if>
+          <if test="user_logo != null">
+              and user_logo = #{user_logo,jdbcType=VARCHAR}
+          </if>
+          <if test="user_state != null">
+              and user_state = #{user_state,jdbcType=VARCHAR}
+          </if>
+          <if test="phone != null">
+              and phone = #{phone,jdbcType=VARCHAR}
+          </if>
+          <if test="email != null">
+              and email = #{email,jdbcType=VARCHAR}
+          </if>
+  </select>
+
+<select id="selectByNotPre" parameterType="com.ams.entity.User" resultType="com.ams.entity.User">
+      select * from tbl_user,tbl_club_members where tbl_user.uid=tbl_club_members.uid and user_state!="回收" and tbl_club_members.uid not in(select uid from tbl_club_members where president_flag=1)   
+          <if test="emid != null">
+              and emid = #{emid,jdbcType=VARCHAR}
+          </if>
+          <if test="sduid != null">
+              and sduid = #{sduid,jdbcType=VARCHAR}
+          </if>
+          <if test="name != null">
+              and name = #{name,jdbcType=VARCHAR}
+          </if>
+          <if test="pwd != null">
+              and pwd = #{pwd,jdbcType=VARCHAR}
+          </if>
+          <if test="type != null">
+              and type = #{type,jdbcType=VARCHAR}
+          </if>
+          <if test="major != null">
+              and major = #{major,jdbcType=VARCHAR}
+          </if>
+          <if test="class_num != null">
+              and type = #{class_num,jdbcType=VARCHAR}
+          </if>
+          <if test="user_logo != null">
+              and user_logo = #{user_logo,jdbcType=VARCHAR}
+          </if>
+          <if test="user_state != null">
+              and user_state = #{user_state,jdbcType=VARCHAR}
+          </if>
+          <if test="phone != null">
+              and phone = #{phone,jdbcType=VARCHAR}
+          </if>
+          <if test="email != null">
+              and email = #{email,jdbcType=VARCHAR}
+          </if>
+  </select>
+  
+<select id="countByExample" parameterType="java.lang.String" resultType="java.lang.Integer">
+	    SELECT count(*) FROM tbl_user where type='学生' AND user_state='可用'
+	   <if test="str != null">
+        and (act_name like "%"#{str}"%" or cname like "%"#{str}"%" or fname like "%"#{str}"%")
+    </if>
+	</select>
+
+	<select id="selectByUser" parameterType="map" resultType="com.ams.entity.User">
+		SELECT uid,sduid,name,sex,major,class_num,phone,email,user_logo,user_state FROM tbl_user WHERE type='学生' AND user_state='可用'
+	     <if test="str != null">
+        and (act_name like "%"#{str}"%" or cname like "%"#{str}"%" or fname like "%"#{str}"%")
+    </if>
+	    limit ${offset},${limit}
+	</select>
+	
+	 <select id="countByAdmin" parameterType="java.lang.String" resultType="java.lang.Integer">
+	    SELECT count(*) FROM tbl_user where  user_state='可用' AND type='管理员' or type='超级管理员' 
+	   <if test="str != null">
+        and (act_name like "%"#{str}"%" or cname like "%"#{str}"%" or fname like "%"#{str}"%")
+    </if>
+	</select>
+
+	<select id="selectByAdmin" parameterType="map" resultType="com.ams.entity.User">
+		SELECT uid,emid,name,user_logo,sex,type,major,class_num,phone,email,user_state FROM tbl_user WHERE user_state='可用' AND type='管理员' OR type='超级管理员' 
+	     <if test="str != null">
+        and (act_name like "%"#{str}"%" or cname like "%"#{str}"%" or fname like "%"#{str}"%")
+    </if>
+	    limit ${offset},${limit}
+	</select>
+<select id="selectUserForSearch" parameterType="java.lang.String" resultMap="userMap">
+      select * from tbl_user where sduid like "%"#{uid}"%" or emid like "%"#{emid}"%" or name like "%"#{name}"%"
+  </select>
+  
+  <insert id="insertUser" parameterType="com.ams.entity.User">
+    insert into tbl_user(uid,sduid,emid,name,pwd,type,sex,phone,email,major,class_num,user_logo,user_state)
+    values (#{uid,jdbcType=INTEGER}, #{sduid,jdbcType=VARCHAR}, #{emid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{major,jdbcType=VARCHAR}, #{class_num,jdbcType=VARCHAR}, #{user_logo,jdbcType=VARCHAR}, #{user_state,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <update id="updateByUid"  parameterType="com.ams.entity.User">
+    update tbl_user
+    <set>
+      <if test="user.emid != null">
+        emid = #{user.emid,jdbcType=VARCHAR},
+      </if>
+      <if test="user.sduid != null">
+        sduid = #{user.sduid,jdbcType=VARCHAR},
+      </if>
+      <if test="user.name != null">
+        name = #{user.name,jdbcType=VARCHAR},
+      </if>
+
+      <if test="user.pwd != null">
+        pwd = #{user.pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="user.type != null">
+        type = #{user.type,jdbcType=VARCHAR},
+      </if>
+      <if test="user.major != null">
+        major = #{user.major,jdbcType=VARCHAR},
+      </if>
+      <if test="user.class_num != null">
+        class_num = #{user.class_num,jdbcType=VARCHAR},
+      </if>
+      <if test="user.user_logo != null">
+        user_logo = #{user.user_logo,jdbcType=VARCHAR},
+      </if>
+      <if test="user.user_state != null">
+        user_state = #{user.user_state,jdbcType=VARCHAR},
+      </if>
+      <if test="user.phone != null">
+        phone = #{user.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="user.email != null">
+        email = #{user.email,jdbcType=VARCHAR},
+      </if>
+      <if test="user.sex != null">
+        sex = #{user.sex,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where uid=#{user.uid}
+  </update>
+  
+  <select id="countuserSum" resultType="java.lang.Integer">
+      select count(*) from tbl_user where user_state!='回收'
+  </select>
+  
+  <select id="countadminSum" resultType="java.lang.Integer">
+      select count(*) from tbl_user where user_state!='回收' and type!='学生'
+  </select>
+  
+  <select id="selectBypassword" resultMap="userMap" parameterType="java.lang.String" >
+        SELECT * FROM tbl_user WHERE pwd = #{pwd} AND uid = #{uid}
+    </select>
+  
+</mapper>

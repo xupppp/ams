@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ams.mapper.ActivityMapper">
+
+
+<select id="countByExample" parameterType="map" resultType="java.lang.Integer">
+    select count(*) from tbl_activity,tbl_field 
+    <if test="type==1">
+        ,tbl_club
+    </if>
+    <if test="type==2">
+        ,tbl_user
+    </if>
+    where tbl_activity.fid=tbl_field.fid and act_state=#{state}
+    <if test="act_type!=null and act_type!=''">
+        and act_type=#{act_type}
+    </if>
+    <if test="type==1">
+        and tbl_activity.cid=tbl_club.cid
+    </if>
+    <if test="type==2">
+        and tbl_activity.uid=tbl_user.uid
+    </if>
+    <if test="type==1 and str != null and str!=''">
+        and (act_name like "%"#{str}"%" or cname like "%"#{str}"%" or fname like "%"#{str}"%")
+    </if>
+    <if test="type==2 and str != null and str!=''">
+        and (act_name like "%"#{str}"%" or fname like "%"#{str}"%")
+    </if>
+</select>
+
+<select id="selectByExample" parameterType="map" resultType="com.ams.entity.Activity">
+    select * from tbl_activity,tbl_field,tbl_act_type
+    <if test="type==1">
+        ,tbl_club
+    </if>
+    <if test="type==2">
+        ,tbl_user
+    </if>
+     where tbl_activity.fid=tbl_field.fid and act_state=#{state} and tbl_act_type.atid=tbl_activity.atid
+    <if test="act_type!=null and act_type!=''">
+        and act_type=#{act_type}
+    </if>
+    <if test="type==1">
+        and tbl_activity.cid=tbl_club.cid
+    </if>
+    <if test="type==2">
+        and tbl_activity.uid=tbl_user.uid
+    </if>
+    <if test="type==1 and str != null and str!=''">
+        and (act_name like "%"#{str}"%" or cname like "%"#{str}"%" or fname like "%"#{str}"%")
+    </if>
+    <if test="type==2 and str != null and str!=''">
+        and (act_name like "%"#{str}"%" or fname like "%"#{str}"%")
+    </if>
+    limit ${offset},${limit}
+</select>
+
+<select id="selectByExample2" parameterType="map" resultType="com.ams.entity.Activity">
+    select * from tbl_activity,tbl_field
+    <if test="type==1">
+        ,tbl_club
+    </if>
+    <if test="type==2">
+        ,tbl_user
+    </if>
+     where tbl_activity.fid=tbl_field.fid and act_state=#{state} 
+     <if test="atid!=0">
+        and atid=#{atid}
+    </if>
+    <if test="act_type!=null and act_type!=''">
+        and act_type=#{act_type}
+    </if>
+    <if test="type==1">
+        and tbl_activity.cid=tbl_club.cid
+    </if>
+    <if test="type==2">
+        and tbl_activity.uid=tbl_user.uid
+    </if>
+    <if test="type==1 and str != null and str!=''">
+        and (act_name like "%"#{str}"%" or cname like "%"#{str}"%" or fname like "%"#{str}"%")
+    </if>
+    <if test="type==2 and str != null and str!=''">
+        and (act_name like "%"#{str}"%" or fname like "%"#{str}"%")
+    </if>
+</select>
+
+<select id="selectOne" resultType="com.ams.dto.ActivityDTO">
+    select * from tbl_activity,tbl_field,tbl_user
+    <if test="type==1">
+        ,tbl_club
+    </if>
+     where tbl_activity.fid=tbl_field.fid and tbl_activity.chargeuid=tbl_user.uid
+    <if test="type==1">
+        and tbl_activity.cid=tbl_club.cid
+    </if>
+    and actid=#{actid}
+</select>
+
+<select id="listAct" parameterType="com.ams.entity.Activity" resultType="com.ams.entity.Activity">
+    select * from tbl_activity,tbl_field where act_state!='已删除' and tbl_activity.fid=tbl_field.fid
+        <if test="atid!=0">
+        and atid = #{atid,jdbcType=INTEGER}
+        </if>
+        <if test="actid!=null and actid!=''">
+        and actid = #{actid,jdbcType=INTEGER}
+        </if>
+        <if test="cid!=null and cid!=''">
+        and cid = #{cid,jdbcType=INTEGER}
+        </if>
+        <if test="uid!=null and uid!=''">
+        and uid = #{uid,jdbcType=INTEGER}
+        </if>
+        <if test="fid!=null and fid!=''">
+        and tbl_activity.fid = #{fid,jdbcType=INTEGER}
+        </if>
+        <if test="act_name != null">
+        and act_name = #{act_name,jdbcType=VARCHAR}
+        </if>
+        <if test="act_contents != null">
+        and act_contents = #{act_contents,jdbcType=VARCHAR}
+        </if>
+        <if test="chargeuid != null and chargeuid!=''">
+        and chargeuid = #{chargeuid,jdbcType=INTEGER}
+        </if>
+        <if test="act_numberlimit != null and act_numberlimit!=''">
+        and act_numberlimit = #{act_numberlimit,jdbcType=INTEGER}
+        </if>
+        <if test="start_time != null">
+        and start_time = #{start_time,jdbcType=VARCHAR}
+        </if>
+        <if test="end_time != null">
+        and end_time = #{end_time,jdbcType=VARCHAR}
+        </if>
+        <if test="act_state != null">
+        and act_state = #{act_state,jdbcType=VARCHAR}
+        </if>
+        <if test="act_time != null">
+        and act_time = #{act_time,jdbcType=VARCHAR}
+        </if>
+        <if test="act_type != null">
+        and act_type = #{act_type,jdbcType=VARCHAR}
+        </if>
+        <if test="act_remark != null">
+        and act_remark = #{act_remark,jdbcType=VARCHAR}
+        </if>
+</select>
+
+<select id="selectCharge"  resultType="com.ams.entity.User">
+    select * from tbl_activity,tbl_user where tbl_activity.chargeuid=tbl_user.uid and actid=#{actid}
+</select>
+
+<update id="updateByExample" parameterType="com.ams.entity.Activity">
+    update tbl_activity
+    <set>
+        <if test="cid!=null and cid!=''">
+        cid = #{cid,jdbcType=INTEGER},
+        </if>
+        <if test="uid!=null and uid!=''">
+        uid = #{uid,jdbcType=INTEGER},
+        </if>
+        <if test="fid!=null and fid!=''">
+        fid = #{fid,jdbcType=INTEGER},
+        </if>
+        <if test="act_name != null">
+        act_name = #{act_name,jdbcType=VARCHAR},
+        </if>
+        <if test="act_contents != null">
+        act_contents = #{act_contents,jdbcType=VARCHAR},
+        </if>
+        <if test="chargeuid != null and chargeuid!=''">
+        chargeuid = #{chargeuid,jdbcType=INTEGER},
+        </if>
+        <if test="act_numberlimit != null and act_numberlimit!=''">
+        act_numberlimit = #{act_numberlimit,jdbcType=INTEGER},
+        </if>
+        <if test="start_time != null">
+        start_time = #{start_time,jdbcType=VARCHAR},
+        </if>
+        <if test="end_time != null">
+        end_time = #{end_time,jdbcType=VARCHAR},
+        </if>
+        <if test="act_state != null">
+        act_state = #{act_state,jdbcType=VARCHAR},
+        </if>
+        <if test="act_time != null">
+        act_time = #{act_time,jdbcType=VARCHAR},
+        </if>
+        <if test="act_type != null">
+        act_type = #{act_type,jdbcType=VARCHAR},
+        </if>
+        <if test="act_remark != null">
+        act_remark = #{act_remark,jdbcType=VARCHAR},
+        </if>
+    </set>
+    where actid=#{actid}
+</update>
+
+<insert id="insertByExample" parameterType="com.ams.entity.Activity">
+    insert into tbl_activity
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="cid != null and cid!=''">
+        cid,
+      </if>
+      <if test="uid != null and uid!='' and uid>0">
+        uid,
+      </if>
+      <if test="act_name != null">
+        act_name,
+      </if>
+      <if test="act_contents != null">
+        act_contents,
+      </if>
+      <if test="fid != null and fid!=''">
+        fid,
+      </if>
+      <if test="chargeuid != null and chargeuid!=''">
+        chargeuid,
+      </if>
+      <if test="act_numberlimit != null and act_numberlimit!=''">
+        act_numberlimit,
+      </if>
+      <if test="start_time != null">
+        start_time,
+      </if>
+      <if test="end_time != null">
+        end_time,
+      </if>
+      <if test="act_state != null">
+        act_state,
+      </if>
+      <if test="act_type != null">
+        act_type,
+      </if>
+      <if test="act_remark != null">
+        act_remark,
+      </if>
+      <if test="act_time != null">
+        act_time,
+      </if>
+      <if test="atid != null and atid !=''">
+        atid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="cid != null and cid!=''">
+        #{cid,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null and uid!='' and uid>0">
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="act_name != null">
+        #{act_name,jdbcType=VARCHAR},
+      </if>
+      <if test="act_contents != null">
+        #{act_contents,jdbcType=VARCHAR},
+      </if>
+      <if test="fid != null and fid!=''">
+        #{fid,jdbcType=INTEGER},
+      </if>
+      <if test="chargeuid != null and chargeuid!=''">
+        #{chargeuid,jdbcType=INTEGER},
+      </if>
+      <if test="act_numberlimit != null and act_numberlimit!=''">
+        #{act_numberlimit,jdbcType=INTEGER},
+      </if>
+      <if test="start_time != null">
+        #{start_time,jdbcType=VARCHAR},
+      </if>
+      <if test="end_time != null">
+        #{end_time,jdbcType=VARCHAR},
+      </if>
+      <if test="act_state != null">
+        #{act_state,jdbcType=VARCHAR},
+      </if>
+      <if test="act_type != null">
+        #{act_type,jdbcType=VARCHAR},
+      </if>
+      <if test="act_remark != null">
+        #{act_remark,jdbcType=VARCHAR},
+      </if>
+      <if test="act_time != null">
+        #{act_time,jdbcType=VARCHAR},
+      </if>
+      <if test="atid != null and atid !=''">
+        #{atid,jdbcType=INTEGER},
+      </if>
+    </trim>
+</insert>
+  
+<select id="selectTop"  resultType="com.ams.entity.Club">
+    select count(*) as club_act,tbl_activity.cid,cname,club_contents,club_logo from tbl_activity,tbl_club where tbl_activity.cid=tbl_club.cid and act_state='已发布' and club_state!='删除' group by tbl_activity.cid order by club_act DESC
+</select>
+
+<select id="selectHot"  resultType="com.ams.entity.Activity">
+    select count(*) as signnum,act_name,act_contents,tbl_activity.actid from tbl_activity,tbl_act_sign where tbl_activity.actid=tbl_act_sign.actid and act_state='已发布' and act_type='全部' and sign_state!='取消' group by tbl_activity.actid order by signnum DESC
+</select>
+
+<select id="countactSum" resultType="java.lang.Integer">
+      select count(*) from tbl_activity where act_state!='发布待审' and act_state!='已删除'
+  </select>
+  
+  <select id="countnewactSum" resultType="java.lang.Integer">
+      select count(*) from tbl_activity where act_state='发布待审'
+  </select>
+  
+  <select id="countcheckAct" resultType="java.lang.Integer">
+      select count(*) from tbl_activity where act_state='发布待审' or act_state='修改待审'
+  </select>
+  <select id="selectActTop"  resultType="com.ams.entity.Club">
+    select count(*) as club_act,tbl_activity.cid,cname,club_contents,club_logo,club_state,club_type_name from tbl_activity,tbl_club,tbl_club_type where tbl_activity.cid=tbl_club.cid and tbl_club.ctid=tbl_club_type.ctid and act_state='已发布' and club_state!='删除' group by tbl_activity.cid order by club_act DESC
+</select>
+
+    <select id="countByAct" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from tbl_activity,tbl_act_type WHERE tbl_activity.atid=tbl_act_type.atid  and tbl_act_type.atid=#{atid}
+        <if test="str != null">
+            and (cname like "%"#{str}"%")
+        </if>
+    </select>
+    <select id="selectByAct" parameterType="map" resultType="com.ams.entity.Activity">
+        select * from tbl_activity,tbl_act_type WHERE tbl_activity.atid=tbl_act_type.atid  and tbl_act_type.atid=#{atid}
+        <if test="str != null">
+            and (cname like "%"#{str}"%")
+        </if>
+        limit ${offset},${limit}
+    </select>
+  
+</mapper>

@@ -1,0 +1,205 @@
+  <title>活动 - 数据表格</title>
+
+  <div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+      <a lay-href="">主页</a>
+      <a><cite>活动</cite></a>
+      <a><cite>查看</cite></a>
+      <a><cite>已驳回活动列表</cite></a>
+    </div>
+  </div>
+  
+  <div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-md12">
+        <div class="layui-card">
+          <div class="layui-card-header">已驳回活动列表</div>
+          <div class="layui-card-body">
+          <table class="layui-hide" id="test-table-toolbar" lay-filter="test-table-toolbar"></table>
+            <script type="text/html" id="test-table-toolbar-toolbarDemo">
+              <div class="layui-input-inline">
+              <select name="act_type" id="act_type" lay-verify="required" lay-search="">
+                  <option value="">面向群体</option>
+                  <option value="全部">全部</option>
+                  <option value="社内">社内</option>
+              </select>
+              </div>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="活动名/社团名/场地名" autocomplete="off" class="layui-input layui-input-search" id="search-str">
+              </div>
+              <div class="layui-inline">
+              	<button class="layui-btn layui-btn-sm" lay-submit lay-filter="LAY-user-front-search" lay-event="act-search">
+                  <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                </button>
+              </div>
+              <div class="layui-inline" style="margin-left: 20px;">
+                <button class="layui-btn layui-btn-sm" lay-event="getCharge">查看负责人信息</button>
+              </div>
+            </script>
+                      
+            <script type="text/html" id="test-table-toolbar-barDemo">
+              <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="pass">重新通过</a>
+              <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+            </script>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script type="text/html" id="buttonTpl">
+        {{#  if(d.act_type == '全部'){ }}
+          <button class="layui-btn layui-btn-normal layui-btn-xs">全部</button>
+        {{#  } else{ }}
+          <button class="layui-btn layui-btn-warm layui-btn-xs">社内</button>
+        {{#  } }}
+  </script>
+  
+  <script>
+  function formatTime (date) {
+      var year = date.getFullYear()
+      var month = date.getMonth() + 1
+      var day = date.getDate()
+      var hour = date.getHours()
+      var minute = date.getMinutes()
+      var second = date.getSeconds() 
+      return [year, month, day].map(formatNumber).join('-') + ' ' + [hour, minute, second].map(formatNumber).join(':')
+}
+function formatNumber  ( n ) {
+      n = n.toString();
+      return n[1] ? n : '0' + n;
+} 
+
+  layui.use(['admin', 'table','element'], function(){
+    var admin = layui.admin
+    ,table = layui.table
+    ,element = layui.element
+    ,$=layui.$
+    ,t = layui.view
+    ,r = layui.form
+    ,i = (layui.$, layui.admin);
+  
+    table.render({                   //社团发起的活动表
+      elem: '#test-table-toolbar'
+      ,url:'activity/select'
+      ,where: { 
+  		    type:1,
+  		    act_state:"已驳回"
+  		  }
+      ,toolbar: '#test-table-toolbar-toolbarDemo'
+      ,title: '已驳回活动数据表'
+      ,cols: [[
+    	  {type:'radio'}
+        ,{field:'actid', title:'ID', width:100, fixed: 'left', unresize: true, sort: true,hide:true}
+        ,{field:'act_name', title:'活动名', width:170}
+        ,{field:'act_contents', title:'活动内容', width:160}
+        ,{field:'cid', title:'社团编号', width:70,hide:true}
+        ,{field:'cname', title:'发起社团', width:110,sort: true}
+        ,{field:'act_numberlimit', title:'名额', width:70,sort: true}
+         ,{field:'fid', title:'场地编号', width:70,hide:true} 
+         ,{field:'fname', title:'场地', width:120,sort: true} 
+         ,{field:'act_type', title:'面向群体', width:100,templet: "#buttonTpl"}
+        ,{field:'start_time', title:'开始时间', width:144, sort: true}
+        ,{field:'end_time', title:'结束时间', width:144, sort: true}
+        ,{field:'act_time', title:'申请时间', width:144, sort: true}
+        ,{field:'chargeuid', title:'负责人编号', width:144, sort: true,hide:true}
+        ,{title:'操作', toolbar: '#test-table-toolbar-barDemo', width:150,fixed: 'right'}
+      ]]
+      ,page: true
+      ,id: 'testReload'
+    });
+    
+   
+    //头工具栏事件
+    table.on('toolbar(test-table-toolbar)', function(obj){
+      var checkStatus = table.checkStatus(obj.config.id)
+      var data = checkStatus.data;
+      
+      switch(obj.event){
+        case 'act-search':                //搜索
+        	var str=$("#search-str").val();
+        	table.reload('testReload', {
+        		  where: { 
+        		    str:str,
+        		    type:1,
+        		    act_state:"已驳回",
+        		    act_type:$("#act_type").val()
+        		  }
+        		  ,page: {
+        		    curr: 1 
+        		  }
+        		});  
+        	break;
+        case 'getCharge':       
+        	if(data.length!=1){
+        		layer.msg("未选中行");
+        		break;
+        	}
+        	window.actid=data[0].actid;
+        	i.popup({
+    			title: "负责人信息",
+    			area: ["500px", "500px"],
+    			id: "LAY-popup-list-charge",
+    			success: function(e, i) {
+    				t(this.id).render("activity/list/charge").done(function() {
+    					r.render(null, "layuiadmin-form-charge"), r.on("submit(LAY-user-front-submit)", function(e) { 
+    						layer.close(i);
+    						
+    					})
+    				})
+    			}
+    		})
+    		break;
+        	
+      };
+    });
+    
+     
+  table.on("tool(test-table-toolbar)", function(e) {        //操作栏
+		var l = e.data;
+		window.fid=l.fid;
+		window.cid=l.cid;
+		window.chargeuid=l.chargeuid;
+		"del" === e.event ? layer.confirm("确定删除此活动？", function(i) {
+				$.ajax({
+		              type: 'POST',
+		              url: "activity/delete",
+		              dataType: 'json',
+		              contentType: 'application/json',
+		              data: JSON.stringify(l),
+		              success: function (msg) { // 返回的RequestResult的json对象
+		                  if (msg == 1) {
+		                	  layui.table.reload("testReload");layer.close(i);
+		                  } else {
+		                      layer.msg('删除失败！请重试');
+		                  }
+		              },
+		          }); 
+		
+		}):""
+		if(e.event=="pass"){
+			var now=new Date();  
+			var act_time=formatTime (now);
+			var str={act_state:"已发布",actid:l.actid,act_time:act_time};
+			$.ajax({
+	              type: 'POST',
+	              url: "activity/update",
+	              dataType: 'json',
+	              contentType: 'application/json',
+	              data: JSON.stringify(str),
+	              success: function (msg) { // 返回的RequestResult的json对象
+	                  if (msg == 1) {
+	                	  layui.table.reload("testReload");
+	                  } else {
+	                      layer.msg('操作失败！请重试');
+	                  }
+	              },
+	          });
+		}
+	})
+
+  
+  });
+  </script>
+  

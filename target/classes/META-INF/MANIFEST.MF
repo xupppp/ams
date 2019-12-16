@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: xupeiting
+Build-Jdk: 10.0.2
+Implementation-Title: evaluation
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: com.evaluation
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/evaluation
+Created-By: Maven Integration for Eclipse
+

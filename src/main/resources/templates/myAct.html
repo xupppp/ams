@@ -1,0 +1,300 @@
+<link rel="stylesheet" href="vendor/layui/css/layui.css">
+<script type="text/javascript" src="vendor/layui/layui.js"></script>
+<body style="background: transparent url(img/PTS_Movie_Branding_Background.jpg)no-repeat 0 0;background-attachment: fixed;background-size: cover;">
+<div class="layui-layout layui-layout-admin">
+	<div class="layui-header" style="z-index:9999;position: relative;">
+
+		<!-- 头部区域 -->
+		<ul class="layui-nav" style="padding: 0 200px;">
+			<div class="layui-logo" style="color:white;">AMS-stu</div>
+			<li class="layui-nav-item">
+				<a href="stu-index">首页</a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="#">社团</a>
+				<dl class="layui-nav-child">
+				    <dd>
+						<a href="club-list">社团展示</a>
+					</dd>
+					<dd>
+						<a href="club-build" id="nav-buildclub">创建社团</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="#">活动</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="activity-all-list">校内活动</a>
+					</dd>
+					<dd>
+						<a href="activity-inner-list">社内活动</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="news-all-list">新闻</a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;">我的</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="club-mine">我的社团</a>
+					</dd>
+					<dd>
+						<a href="notice-mine">我的公告</a>
+					</dd>
+					<dd>
+						<a href="myAct">我的活动</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item" id="nav-manager">
+				<a href="javascript:;">管理</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="manageClub">社团管理</a>
+					</dd>
+					<dd>
+						<a href="manageNotice">公告管理</a>
+					</dd>
+					<dd>
+						<a href="addNotice">发布公告</a>
+					</dd>
+					<dd>
+						<a href="manageAct">活动管理</a>
+					</dd>
+					<dd>
+						<a href="applyAct">申请活动</a>
+					</dd>
+		            <dd>
+						<a href="managenews">新闻管理</a>
+					</dd>
+					<dd>
+						<a href="addnews">发布新闻</a>
+					</dd>
+				</dl>
+			 </li>
+		</ul>
+
+		<ul class="layui-nav layui-layout-right">
+			<li class="layui-nav-item layui-hide-xs" lay-unselect>
+				<input type="text" placeholder="搜索..." autocomplete="off" class="layui-input layui-input-search" layadmin-event="serach" lay-action="template/search/keywords=">
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;" id='username'>
+					<img id="userlogo" class="layui-nav-img">
+				</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="userinformation">基本资料</a>
+					</dd>
+					<dd>
+						<a href="setPwd">修改密码</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:void(0);" onclick="loginout()">退出登录</a>
+			</li>
+		</ul>
+
+	</div>
+
+	<!-- 主体内容 -->
+	<div class="layui-body" style="margin-right:200px;background-color:white;padding:10px 20px 10px 20px;">
+		<div>
+		<fieldset class="layui-elem-field" style="margin-top: 30px;">
+				<legend>待进行的活动</legend>
+				<div class="layui-fluid">
+					<div class="layui-row" style="text-align: center;" id="act-daijinxing"></div>				
+				</div>
+	   </fieldset>
+			
+			<fieldset class="layui-elem-field" style="margin-top: 30px;">
+				<legend>历史参与活动</legend>
+				<div class="layui-fluid">
+					<div class="layui-row" style="text-align: center;" id="act-history"></div>				
+				</div>
+			</fieldset>
+
+		</div>
+	</div>
+
+</div>
+</body>
+
+   <style type="text/css">
+            .card:hover{
+                transform: scale(1.04);
+                box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.1);
+            }
+     </style>
+     
+<script>
+	layui.use(['element','layer'], function() {
+		var $ = layui.jquery,
+		    layer=layui.layer;
+			element = layui.element; 
+			//显示菜单栏用户信息
+			$.ajax({
+			    type: 'GET',
+			    url: "login/getLoginUser",
+			    success: function (data) { 
+			    	if(data.type!="学生"){
+			    		loginout();
+			    	}
+			    	$("#username").append(data.name);
+			    	$("#userlogo").attr('src',data.user_logo);
+			    }
+			});
+			//是否显示管理菜单
+			$.ajax({
+			    type: 'GET',
+			    url: "login/president",
+			    success: function (msg) { 
+			        if(msg==0){
+			        	$("#nav-manager").hide();
+			        }
+			        else{
+			        	$("#nav-buildclub").hide();
+			        }
+			    }
+			});
+			//退出登录
+			 loginout=function(){
+				$.ajax({
+	 			    type: 'GET',
+	 			    url: "login/logout",
+	 			    success: function (msg) { 
+	 			        if(msg==1){
+	 			        	layer.msg('退出成功，正在跳转......', {icon: 6});
+		                    setTimeout(function () {
+		                        window.location.href = "stu-login";
+		                    }, 2000);
+	 			        }
+	 			        else{
+	 			        	layer.msg('退出错误，请重试', {icon: 5});
+	 			        }
+	 			    }
+	 			});
+			}
+		//监听导航点击
+		element.on('nav(demo)', function(elem) {
+			//console.log(elem)
+			layer.msg(elem.text());
+		});
+		//获取当前用户uid
+		var uid=0;
+		$.ajax({
+			type: 'GET',
+			url: "login/getLogin",
+			async:false,
+			success: function(data) {
+				uid=data;
+			}
+		});
+		//加载待进行活动
+		$.ajax({
+			type: 'GET',
+			url: "activity/selectByUser?uid="+uid+"&type=1",   //这里的type区分活动待进行还是已完成
+			success: function(data) {
+				if(data[0]==null){
+					var str="<div style='padding-bottom:15px;color:#d2d2d2'>还没有此类别的活动～</div>"
+					$("#act-daijinxing").append(str);
+				}
+				else{
+				$.each(data, function(index, item){
+					var type=$("<span class='layui-badge layui-bg-green' style='margin-top:10px;'></span>").text(item.act_type);
+            	    var typerow=$("<div class='layui-row' style='margin-top:1px;text-align:center'></div>").append(type);
+					var actname=$("<div class='layui-card-header' style='font-size:15px;color:white;font-weight:350;margin-top:15px;background:#36A18B;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'></div>").text(item.act_name);
+					var contents=$("<div class='layui-card-body' style='height:65px;font-size:14px;font-weight:350;overflow: hidden;display:-webkit-box; -webkit-line-clamp:3;-webkit-box-orient: vertical;'></div>").text(item.act_contents);
+					var btn=$("<div class='layui-row' style='padding:10px 40px 10px 40px;'><button class='layui-btn layui-btn-sm layui-btn-warm' style='background:#329567' onclick='cancel("+item.asid+")'>取消报名</button><button class='layui-btn layui-btn-sm layui-btn-primary' onclick='more("+item.actid+",1)'>详情</button></div>");
+					var card=$("<div class='layui-card card' style='background-color: #FBF6F4;'>").append(actname,typerow,contents,btn);
+					var t=$("<div class='layui-col-md4 ' style='padding: 10px;'>").append(card);
+					$("#act-daijinxing").append(t);
+				})
+			}
+			}
+		});
+		//加载历史活动
+		$.ajax({
+			type: 'GET',
+			url: "activity/selectByUser?uid="+uid+"&type=2",
+			success: function(data) {
+				if(data[0]==null){
+					var str="<div style='padding-bottom:15px;color:#d2d2d2'>还没有此类别的活动～</div>"
+					$("#act-history").append(str);
+				}
+				else{
+				$.each(data, function(index, item){
+					var type=$("<span class='layui-badge layui-bg-green' style='margin-top:10px;'></span>").text(item.act_type);
+            	    var typerow=$("<div class='layui-row' style='margin-top:1px;text-align:center'></div>").append(type);
+					var actname=$("<div class='layui-card-header' style='font-size:15px;color:white;font-weight:350;margin-top:15px;background:#36A18B;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'></div>").text(item.act_name);
+					var contents=$("<div class='layui-card-body' style='height:65px;font-size:14px;font-weight:350;overflow: hidden;display:-webkit-box; -webkit-line-clamp:3;-webkit-box-orient: vertical;'></div>").text(item.act_contents);
+					var btn=$("<div style='margin-bottom:10px; margin-top:10px;padding-bottom:10px;'><button type='button' style='background:#329567' onclick='del("+item.actid+")' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-delete' style='color:white;'></i></button><button type='button' onclick='more("+item.actid+",2)' class='layui-btn layui-btn-sm layui-btn-primary'><i class='layui-icon layui-icon-more' style='color:#329567;'></i></button></div>");
+					var card=$("<div class='layui-card card' style='background-color: #FBF6F4;'>").append(actname,typerow,contents,btn);
+					var t=$("<div class='layui-col-md4' style='padding: 10px;'>").append(card);
+					$("#act-history").append(t);
+				})
+			}
+			}
+		});
+		
+		//取消报名
+		cancel=function(asid){
+			layer.confirm('确定要取消报名吗？', {
+				  btn: ['确定','再看看']
+				}, function(){
+					var str={asid:asid};
+					$.ajax({
+			              type: 'POST',
+			              url: "activity/cancelSign",
+			              dataType: 'json',
+			              contentType: 'application/json',
+			              data: JSON.stringify(str),
+			              success: function (msg) { 
+			                  if (msg == 1) {
+			                	  layer.msg("已成功取消报名！");
+			                	  window.location.reload();
+			                  } 
+			                  else {
+			                      layer.msg('操作失败！请重试');
+			                  }
+			              },
+			          });
+				}, function(){
+				  
+				});
+		}
+		//删除活动
+		del=function(actid){
+			var l={actid:actid};
+			layer.confirm('确定要删除该活动吗？', {
+				  btn: ['删除','再想想']
+				}, function(){
+					$.ajax({
+			              type: 'POST',
+			              url: "activity/delete",
+			              dataType: 'json',
+			              contentType: 'application/json',
+			              data: JSON.stringify(l),
+			              success: function (msg) { 
+			                  if (msg == 1) {
+			                	  layer.msg('删除成功');
+			                	  window.location.reload();
+			                  } else {
+			                      layer.msg('删除失败！请重试');
+			                  }
+			              },
+			          });
+				}, function(){				  
+				});			
+		}
+		//查看详情
+		more=function(actid,type){
+			window.location.href = "activity-info?actid="+actid+"&type="+type;
+		}
+			
+	});
+</script>

@@ -1,0 +1,231 @@
+<link rel="stylesheet" href="vendor/layui/css/layui.css">
+<script type="text/javascript" src="vendor/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.params.js"></script>
+<script type="text/javascript" src="vendor/layui/layui.js"></script>
+<div class="layui-layout layui-layout-admin">
+	<div class="layui-header" style="z-index:9999;position: relative;">
+
+		<!-- 头部区域 -->
+		<ul class="layui-nav" style="padding: 0 200px;">
+			<div class="layui-logo" style="color:white;">AMS-stu</div>
+			<li class="layui-nav-item">
+				<a href="stu-index">首页</a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="#">社团</a>
+				<dl class="layui-nav-child">
+				    <dd>
+						<a href="club-list">社团展示</a>
+					</dd>
+					<dd>
+						<a href="club-build" id="nav-buildclub">创建社团</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="#">活动</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="activity-all-list">校内活动</a>
+					</dd>
+					<dd>
+						<a href="activity-inner-list">社内活动</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="news-all-list">新闻</a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;">我的</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="club-mine">我的社团</a>
+					</dd>
+					<dd>
+						<a href="notice-mine">我的公告</a>
+					</dd>
+					<dd>
+						<a href="myAct">我的活动</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item" id="nav-manager">
+				<a href="javascript:;">管理</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="manageClub">社团管理</a>
+					</dd>
+					<dd>
+						<a href="manageNotice">公告管理</a>
+					</dd>
+					<dd>
+						<a href="addNotice">发布公告</a>
+					</dd>
+					<dd>
+						<a href="manageAct">活动管理</a>
+					</dd>
+					<dd>
+						<a href="applyAct">申请活动</a>
+					</dd>
+		            <dd>
+						<a href="managenews">新闻管理</a>
+					</dd>
+					<dd>
+						<a href="addnews">发布新闻</a>
+					</dd>
+				</dl>
+			 </li>
+		</ul>
+
+		<ul class="layui-nav layui-layout-right">
+			<li class="layui-nav-item layui-hide-xs" lay-unselect>
+				<input type="text" placeholder="搜索..." autocomplete="off" class="layui-input layui-input-search" layadmin-event="serach" lay-action="template/search/keywords=">
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;" id='username'>
+					<img id="userlogo" class="layui-nav-img">
+				</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="userinformation">基本资料</a>
+					</dd>
+					<dd>
+						<a href="setPwd">修改密码</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:void(0);" onclick="loginout()">退出登录</a>
+			</li>
+		</ul>
+
+	</div>
+	<!-- 主体内容 -->
+	<div class="layui-body">
+		<div style="margin-right:200px;">
+		
+		<hr class="layui-bg-blue" style="margin-top:30px">
+		<fieldset class="layui-elem-field layui-field-title">
+			<legend>新闻一览</legend>
+		</fieldset>
+
+		<div class="layui-fluid">
+		    <div class="layui-row layui-col-space15" id="news-list">
+               
+            </div>
+			<div id="fenye" style="text-align: center;margin-top: 20px;"></div>
+		</div>
+        </div>
+	</div>
+	
+</div>
+<script>
+
+	layui.use(['laypage', 'layer','element','carousel','form'], function() {
+		var laypage = layui.laypage,
+			layer = layui.layer,
+			element = layui.element,
+			carousel = layui.carousel,
+			form = layui.form
+			,$=layui.$;
+		//显示菜单栏用户信息
+		$.ajax({
+		    type: 'GET',
+		    url: "login/getLoginUser",
+		    success: function (data) { 
+		    	if(data.type!="学生"){
+		    		loginout();
+		    	}
+		    	$("#username").append(data.name);
+		    	$("#userlogo").attr('src',data.user_logo);
+		    }
+		});
+		//是否显示管理菜单
+		$.ajax({
+			    type: 'GET',
+			    url: "login/president",
+			    success: function (msg) { 
+			        if(msg==0){
+			        	$("#nav-manager").hide();
+			        }
+			        else{
+			        	$("#nav-buildclub").hide();
+			        }
+			    }
+			});
+		//退出登录
+		 loginout=function(){
+			$.ajax({
+ 			    type: 'GET',
+ 			    url: "login/logout",
+ 			    success: function (msg) { 
+ 			        if(msg==1){
+ 			        	layer.msg('退出成功，正在跳转......', {icon: 6});
+	                    setTimeout(function () {
+	                        window.location.href = "stu-login";
+	                    }, 2000);
+ 			        }
+ 			        else{
+ 			        	layer.msg('退出错误，请重试', {icon: 5});
+ 			        }
+ 			    }
+ 			});
+		}
+		//监听导航点击
+		element.on('nav(demo)', function(elem) {
+			//console.log(elem)
+			layer.msg(elem.text());
+		});
+		
+		 //分页显示社团
+		var count=0;
+		function showReocrd(pageNo,pageSize){
+			$.ajax({
+	            type: 'GET',
+	            url: "news/select?page="+pageNo+"&limit="+pageSize+"&news_type=活动回顾&news_state=已发布&type=0",
+	            async:false,
+	            success: function (datas) {
+	            	count=datas.count;	            	
+	            	$.each(datas.data, function(index, item){
+	            		var starttime=$("<div class='layui-col-md10' style='color:#2F4056;'></div>").text(item.news_time);
+	            		var starticon="<div class='layui-col-md2'><i class='layui-icon layui-icon-play' style='font-size: 25px;color:#3965AC;'></i></div>";
+	            		var start=$("<div class='layui-row layui-col-space5'></div>").append(starticon,starttime);
+	            		var contentsstr=$("<div class='layui-col-md10' style='overflow: hidden;display:-webkit-box; -webkit-line-clamp:3;-webkit-box-orient: vertical;color:#2F4056;'></div>").text(item.news_contents);
+	            		var contentsicon="<div class='layui-col-md2'><i class='layui-icon layui-icon-form' style='font-size: 25px;color:#3965AC;'></i></div>";
+	            		var contents=$("<div class='layui-row layui-col-space5' style='margin-top:10px;height:70px;'></div>").append(contentsicon,contentsstr);
+	            		var btn="<div class='layui-col-md2 layui-col-md-offset4'><a href='javascript:void(0);'<div class='layui-col-md2'><a href='javascript:void(0);' onclick='xiangqing("+item.newsid+")'><img src='img/xiangqing.png' width='75%'> </a></div></div>";
+	            		var body=$("<div class='layui-card-body' style='background:#f7f7f7; height:200px;'></div>").append(contents,start,btn);
+	            		var header=$("<div class='layui-card-header' style='background:#1E9FFF;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;color:white;'></div>").text(item.act_name);
+	            		var card=$("<div class='layui-card'></div>").append(header,body);
+	            		var t=$("<div class='layui-col-md4'></div>").append(card);
+	            		$("#news-list").append(t);
+	            	})  
+	            },
+	        }); 
+		}
+   	    showReocrd(1,6);   //先展示第一页，每页8条数据
+		laypage.render({
+	           elem: 'fenye' 
+	           ,count: count 
+	           , limit: 6      //设置每页条数                
+	           , curr: 1                        //起始页
+	           , jump: function (obj, first) { //obj为当前页的属性和方法，第一次加载first为true
+	               if (!first) {
+	               	   //清空以前加载的数据
+	                   $('#news-list').empty();
+	                   //调用加载函数加载数据
+	                   showReocrd(obj.curr,obj.limit);
+	               }
+	           }
+	       });  
+   	    //报名
+ 	
+   	    //查看详情，跳转页面并传递参数newsid
+ 		xiangqing=function(newsid){
+ 			window.location.href = "news-info?newsid="+newsid;
+		}
+		
+
+	});
+</script>

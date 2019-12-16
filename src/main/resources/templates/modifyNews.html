@@ -1,0 +1,361 @@
+<link rel="stylesheet" href="vendor/layui/css/layui.css">
+<script type="text/javascript" src="vendor/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.params.js"></script>
+<script type="text/javascript" src="vendor/layui/layui.js"></script>
+<body style="background: transparent url(img/PTS_Movie_Branding_Background.jpg)no-repeat 0 0;background-attachment: fixed;background-size: cover;">
+<div class="layui-layout layui-layout-admin">
+	<div class="layui-header" style="z-index:9999;position: relative;">
+
+		<!-- 头部区域 -->
+		<ul class="layui-nav" style="padding: 0 200px;">
+			<div class="layui-logo" style="color:white;">AMS-stu</div>
+			<li class="layui-nav-item">
+				<a href="stu-index">首页</a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="#">社团</a>
+				<dl class="layui-nav-child">
+				    <dd>
+						<a href="club-list">社团展示</a>
+					</dd>
+					<dd>
+						<a href="club-build" id="nav-buildclub">创建社团</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="#">活动</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="activity-all-list">校内活动</a>
+					</dd>
+					<dd>
+						<a href="activity-inner-list">社内活动</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="news-all-list">新闻</a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;">我的</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="club-mine">我的社团</a>
+					</dd>
+					<dd>
+						<a href="notice-mine">我的公告</a>
+					</dd>
+					<dd>
+						<a href="myAct">我的活动</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item" id="nav-manager">
+				<a href="javascript:;">管理</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="manageClub">社团管理</a>
+					</dd>
+					<dd>
+						<a href="manageNotice">公告管理</a>
+					</dd>
+					<dd>
+						<a href="addNotice">发布公告</a>
+					</dd>
+					<dd>
+						<a href="manageAct">活动管理</a>
+					</dd>
+					<dd>
+						<a href="applyAct">申请活动</a>
+					</dd>
+		            <dd>
+						<a href="managenews">新闻管理</a>
+					</dd>
+					<dd>
+						<a href="addnews">发布新闻</a>
+					</dd>
+				</dl>
+			 </li>
+		</ul>
+
+		<ul class="layui-nav layui-layout-right">
+			<li class="layui-nav-item layui-hide-xs" lay-unselect>
+				<input type="text" placeholder="搜索..." autocomplete="off" class="layui-input layui-input-search" layadmin-event="serach" lay-action="template/search/keywords=">
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;" id='username'>
+					<img id="userlogo" class="layui-nav-img">
+				</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="userinformation">基本资料</a>
+					</dd>
+					<dd>
+						<a href="setPwd">修改密码</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:void(0);" onclick="loginout()">退出登录</a>
+			</li>
+		</ul>
+
+	</div>
+
+	<div class="layui-body" style="margin: 27px 200px 27px 100px;">
+		<div style="margin:20px;padding: 30px; background-color: #F2F2F2;border-radius:30px;">
+			<div class="layui-card">
+				<div class="layui-card-header" id="tabletitle" style="font-size:20px;color:#1E9FFF;text-align:center;padding-top:20px;padding-bottom:20px;">新闻修改表</div>
+				<div class="layui-card-body" >
+					<form class="layui-form" lay-filter="layuiadmin-form-useradmin" style="margin: 0 auto;">
+						<div class="layui-form-item" style="margin-top:20px;">
+							<label class="layui-form-label">新闻标题</label>
+							<div class="layui-input-block">
+								<input type="text" name="news_title" id="newstitle" lay-verify="required"  autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						
+  
+  <div class="layui-form-item">
+    <label class="layui-form-label">新闻类别</label>
+    <div class="layui-input-block">
+        <select name="news_type" id="mo_news_type"  lay-verify="required"  lay-search="" >
+                  <option value="">可选择一个类别</option>
+                  <option value="社团风采">社团风采</option>
+                  <option value="活动回顾">活动回顾</option>
+                  <option value="公示">公示</option>
+        </select>
+    </div>
+  </div> 
+  
+                          <div class="layui-form-item">
+							<label class="layui-form-label">新闻图片</label>
+							<div class="layui-input-block">
+								<div class="layui-upload">
+  <button type="button" class="layui-btn layui-btn-primary" id="testList">
+  <i class="layui-icon">&#xe654;</i>请选择
+  </button> 
+  <div class="layui-upload-list">
+    <table class="layui-table">
+      <thead>
+        <tr><th>文件名</th>
+        <th>大小</th>
+        <th>状态</th>
+        <th>操作</th>
+      </tr></thead>
+      <tbody id="demoList"></tbody>
+    </table>
+  </div>
+  <button type="button" class="layui-btn layui-btn-primary" id="testListAction">
+  <i class="layui-icon">&#xe67c;</i>重新上传新闻图片</button>
+</div>
+							</div>
+							<input type="text" name="news_img" id="news_img" style='display:none'>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">新闻内容</label>
+							<div class="layui-input-block">
+								<textarea name="news_contents" id="news_contents" required lay-verify="required" placeholder="请输入活动内容" class="layui-textarea"></textarea>
+							</div>
+						</div>
+
+						<div class="layui-form-item" >
+							<div class="layui-input-inline" style="margin-top:40px;margin-left:40px;">
+								<input type="button" lay-submit lay-filter="LAY-user-front-submit" value="提交" class="layui-btn layui-btn-normal">
+								
+							</div>
+						</div>
+
+					</form>
+<!-- 					<button  class="layui-btn layui-btn-primary" style="margin-left:40px;"onclick="backto()">返回</button> -->
+	
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+
+<script>
+	layui.use(['laypage', 'layer', 'element', 'carousel', 'form','laydate','upload','util'], function() {
+		var laypage = layui.laypage,
+			layer = layui.layer,
+			element = layui.element,
+			carousel = layui.carousel,
+			form = layui.form,
+			laydate=layui.laydate,
+			upload=layui.upload,
+			util=layui.util,
+			$ = layui.$;
+		//固定块
+		  util.fixbar({
+		    bar1: '&#xe65c'
+		    ,css: {right: 40, bottom: 30}
+		    ,bgcolor: '#393D49'
+		    ,click: function(type){
+		      if(type === 'bar1'){
+		    	  window.history.back(-1);
+		      } 
+		      if (type === 'top') {
+	                layer.msg('返回顶部')
+	          }
+		    }
+		  });
+		//显示菜单栏用户信息
+			$.ajax({
+			    type: 'GET',
+			    url: "login/getLoginUser",
+			    success: function (data) { 
+			    	if(data.type!="学生"){
+			    		loginout();
+			    	}
+			    	$("#username").append(data.name);
+			    	$("#userlogo").attr('src',data.user_logo);
+			    }
+			});
+		//是否显示管理菜单
+		$.ajax({
+			    type: 'GET',
+			    url: "login/president",
+			    success: function (msg) { 
+			        if(msg==0){
+			        	$("#nav-manager").hide();
+			        }
+			        else{
+			        	$("#nav-buildclub").hide();
+			        }
+			    }
+			});
+		//退出登录
+		 loginout=function(){
+			$.ajax({
+ 			    type: 'GET',
+ 			    url: "login/logout",
+ 			    success: function (msg) { 
+ 			        if(msg==1){
+ 			        	layer.msg('退出成功，正在跳转......', {icon: 6});
+	                    setTimeout(function () {
+	                        window.location.href = "stu-login";
+	                    }, 2000);
+ 			        }
+ 			        else{
+ 			        	layer.msg('退出错误，请重试', {icon: 5});
+ 			        }
+ 			    }
+ 			});
+		}
+		//监听导航点击
+		element.on('nav(demo)', function(elem) {
+			//console.log(elem)
+			layer.msg(elem.text());
+		});
+
+	      form.render();
+		var newsid = $.query.get("newsid");	//获取url路径中actid的值
+		var type = $.query.get("type");
+		if(type==3){
+			$("#tabletitle").append("<div style='font-size:14px; color:#d2d2d2'>可修改内容后重新提交申请</div>")
+		}
+		$.ajax({            //动态加载表单数据
+			   type: 'GET',
+			   url: "news/selectOne?newsid="+newsid,
+			   async:false,
+			   success: function (data) { 
+				 $("#newstitle").val(data.news_title);
+				 $("#news_contents").val(data.news_contents);
+				 $('#mo_news_type').val(data.news_type);
+				 form.render();
+			   },
+			});
+		//多文件列表示例
+		 var imgsrc='';
+		  var demoListView = $('#demoList')
+		  ,uploadListIns = upload.render({
+			async:false
+		    ,elem: '#testList'
+		    ,url: 'news/uploadimg'
+		    ,acceptMime: 'image/*'
+		    ,multiple: true
+		    ,auto: false
+		    ,bindAction: '#testListAction'
+		    ,choose: function(obj){   
+		      var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+		      //读取本地文件
+		      obj.preview(function(index, file, result){
+		        var tr = $(['<tr id="upload-'+ index +'">'
+		          ,'<td>'+ file.name +'</td>'
+		          ,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+		          ,'<td>等待上传</td>'
+		          ,'<td>'
+		            ,'<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+		            ,'<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+		          ,'</td>'
+		        ,'</tr>'].join(''));
+		        
+		        //单个重传
+		        tr.find('.demo-reload').on('click', function(){
+		          obj.upload(index, file);
+		        });
+		        
+		        //删除
+		        tr.find('.demo-delete').on('click', function(){
+		          delete files[index]; //删除对应的文件
+		          tr.remove();
+		          uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+		        });
+		        
+		        demoListView.append(tr);
+		      });
+		    }
+		    ,done: function(res, index, upload){
+		      if(res.code == 0){ //上传成功
+		    	 imgsrc=imgsrc+res.data.src+";";
+		        var tr = demoListView.find('tr#upload-'+ index)
+		        ,tds = tr.children();
+		        tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+		        tds.eq(3).html(''); //清空操作
+		        return delete this.files[index]; //删除文件队列已经上传成功的文件
+		      }
+		      this.error(index, upload);
+		    }
+		    ,error: function(index, upload){
+		      var tr = demoListView.find('tr#upload-'+ index)
+		      ,tds = tr.children();
+		      tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+		      tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
+		    }
+		  });
+		//提交表单
+		form.on("submit(LAY-user-front-submit)", function(e) {
+			e.field.newsid=newsid;
+			e.field.news_img=imgsrc;
+			if(type==1){
+				e.field.news_state="修改待审";
+			}
+			if(type==2||type==3){
+				e.field.news_state="发布待审";
+			}
+			$.ajax({
+	              type: 'POST',
+	              url: "news/update",
+	              dataType: 'json',
+	              contentType: 'application/json',
+	              data: JSON.stringify(e.field),
+	              success: function (msg) { 
+	                  if (msg == 1) {
+	                	  layer.msg("提交成功")
+	                  } 
+	                  
+	                  else {
+	                      layer.msg('更新失败！请重试');
+	                  }
+	              },
+	          });
+		})
+		backto=function(){
+			window.location.href = "managenews";
+		}
+
+	})
+</script>

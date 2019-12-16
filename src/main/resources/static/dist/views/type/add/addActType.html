@@ -1,0 +1,107 @@
+<title>
+	添加活动类别</title>
+
+<div class="layui-card layadmin-header">
+	<div class="layui-breadcrumb" lay-filter="breadcrumb">
+		<a lay-href="">主页</a>
+		<a><cite>类别</cite></a>
+		<a><cite>添加活动类别</cite></a>
+	</div>
+</div>
+
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-card-header">活动类别添加表</div>
+		<div class="layui-card-body" style="padding: 15px;">
+			<form class="layui-form" lay-filter="layuiadmin-form-useradmin">
+				<div class="layui-form-item">
+					<label class="layui-form-label">活动类别名</label>
+					<div class="layui-input-block">
+						<script type="text/html" template>
+							<input type="text" name="act_type_name" id="act_type_name" lay-verify="required" placeholder="请输入活动类别名" autocomplete="off" class="layui-input">
+						</script>
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<input type="button" lay-submit lay-filter="LAY-user-front-submit" value="添加" class="layui-btn">
+						<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					</div>
+				</div>
+
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+	layui.use(['admin', 'form', 'upload'], function() {
+		var $ = layui.$,
+			form = layui.form,
+			upload = layui.upload;
+
+		//动态加载下拉框
+		var src = '<option value="">请搜索或直接选择...</option>';
+		$.ajax({
+			url: '/student/list',
+			dataType: 'json',
+			success: function(data) {
+				$.each(data, function(index, item) {
+					src += "<option value='" + item.uid + "'>" + item.sduid + item.name + "</option>";
+				});
+				$('#user').html(src);
+        form.render();
+			}
+		});
+
+		var uploadInst = upload.render({
+			elem: '#upload',
+			url: 'club/upload/img',
+			before: function(obj) {
+				//预读本地文件示例，不支持ie8
+				obj.preview(function(index, file, result) {
+					$('#demo1').attr('src', result); //图片链接（base64）
+				});
+			},
+			done: function(res) {
+				//如果上传失败
+				if(res.code > 0) {
+					return layer.msg('上传失败');
+				}
+				//上传成功
+				else {
+					return layer.msg('上传成功');
+				}
+			},
+			error: function() {
+				//演示失败状态，并实现重传
+				var demoText = $('#demoText');
+				demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+				demoText.find('.demo-reload').on('click', function() {
+					uploadInst.upload();
+				});
+			}
+		});
+
+		form.on("submit(LAY-user-front-submit)", function(e) {
+			$.ajax({
+				type: 'POST',
+				url: "/activityType/add",
+				dataType: 'json',
+				contentType: 'application/json',
+				data: JSON.stringify(e.field),
+				success: function(msg) {
+					if(msg == 1) {
+						layer.msg('添加活动类别成功');
+					} else {
+						layer.msg('添加失败！请重试');
+					}
+				},
+			});
+			layer.close(i);
+
+		})
+
+	})
+</script>

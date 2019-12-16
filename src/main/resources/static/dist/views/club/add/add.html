@@ -1,0 +1,162 @@
+<title>
+	添加社团</title>
+
+<div class="layui-card layadmin-header">
+	<div class="layui-breadcrumb" lay-filter="breadcrumb">
+		<a lay-href="">主页</a>
+		<a><cite>社团</cite></a>
+		<a><cite>添加</cite></a>
+	</div>
+</div>
+
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-card-header">社团添加表</div>
+		<div class="layui-card-body" style="padding: 15px;">
+			<form class="layui-form" lay-filter="layuiadmin-form-useradmin">
+				<div class="layui-form-item">
+					<label class="layui-form-label">社团名</label>
+					<div class="layui-input-block">
+						<script type="text/html" template>
+							<input type="text" name="cname" id="cname" lay-verify="required" placeholder="请输入社团名" autocomplete="off" class="layui-input">
+						</script>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">社团类别</label>
+					<div class="layui-input-inline">
+						<script type="text/html" template>
+							<select name="ctid" id="type" lay-verify="required" lay-search="">
+							</select>
+						</script>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">社长</label>
+					<div class="layui-input-inline">
+						<script type="text/html" template>
+							<select name="club_uid" id="user" lay-verify="required" lay-search="">
+							</select>
+						</script>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">社团Logo</label>
+					    <div class="layui-input-block">
+					      <div class="layui-upload">
+						      <button type="button" class="layui-btn layui-btn-primary" id="upload">
+                              <i class="layui-icon">&#xe654;</i>请选择
+                              </button> 
+						      <div class="layui-upload-list">
+							      <img class="layui-upload-img" id="demo1">
+							      <p id="demoText"></p>
+						      </div>
+						      <button type="button" class="layui-btn layui-btn-primary" id="sure">
+                              <i class="layui-icon">&#xe67c;</i>开始上传
+                              </button>
+					      </div>
+					    </div>
+					<input type="text" name="club_logo" id="club_logo" style='display:none'>
+				</div>
+				<div class="layui-form-item layui-form-text">
+					<label class="layui-form-label">社团介绍</label>
+					<div class="layui-input-block">
+						<script type="text/html" template>
+							<textarea name="club_contents" required lay-verify="required" class="layui-textarea"></textarea>
+						</script>
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<input type="button" lay-submit lay-filter="LAY-user-front-submit" value="添加" class="layui-btn">
+						<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					</div>
+				</div>
+
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+	layui.use(['admin', 'form', 'upload'], function() {
+		var $ = layui.$,
+			form = layui.form,
+			upload = layui.upload;
+		
+		//动态加载下拉框
+		var src1 = '<option value="">请搜索或直接选择...</option>';
+		$.ajax({
+			url: '/clubType/list',
+			dataType: 'json',
+			success: function(data) {
+				$.each(data, function(index, item) {
+					src1 += "<option value='" + item.ctid + "'>" + item.club_type_name + "</option>";
+				});
+				$('#type').html(src1);
+        form.render();
+			}
+		});
+
+		//动态加载下拉框
+		var src = '<option value="">请搜索或直接选择...</option>';
+		$.ajax({
+			url: '/student/listNotPre',
+			dataType: 'json',
+			success: function(data) {
+				$.each(data, function(index, item) {
+					src += "<option value='" + item.uid + "'>" + item.sduid + item.name + "</option>";
+				});
+				$('#user').html(src);
+        form.render();
+			}
+		});
+
+		upload.render({
+			async:false,
+		    elem: '#upload'
+		    ,url: 'club/uploadimg'
+		    ,auto: false
+		    ,bindAction: '#sure'
+		    ,acceptMime: 'image/*'
+		    ,choose: function(obj){
+		      obj.preview(function(index, file, result){
+		        $('#demo1').attr('src', result); //图片链接（base64）
+		      });
+		    }
+		    ,done: function(res){
+		      //如果上传失败
+		      if(res.code > 0){
+		        return layer.msg('上传图片失败');
+		      }
+		      else{
+		    	  $("#club_logo").val(res.data.src);
+		    	  layer.msg("图片上传成功");
+		      }
+		    }
+		    ,error: function(){
+		    }
+		  });
+
+		form.on("submit(LAY-user-front-submit)", function(e) {
+			$.ajax({
+				type: 'POST',
+				url: "club/add",
+				dataType: 'json',
+				contentType: 'application/json',
+				data: JSON.stringify(e.field),
+				success: function(msg) {
+					if(msg == 1) {
+						layer.msg('添加社团成功');
+					} else {
+						layer.msg('添加失败！请重试');
+					}
+				},
+			});
+			layer.close(i);
+
+		})
+
+	})
+</script>

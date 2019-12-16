@@ -1,0 +1,456 @@
+  <title>新闻 - 数据表格</title>
+
+  <div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+      <a lay-href="">主页</a>
+      <a><cite>新闻</cite></a>
+      <a><cite>查看</cite></a>
+      <a><cite>新闻列表</cite></a>
+    </div>
+  </div>
+  
+  <div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-md12">
+        <div class="layui-card">
+          <div class="layui-card-header">新闻列表</div>
+          <div class="layui-card-body">
+<div class="layui-tab">
+  <ul class="layui-tab-title">
+    <li class="layui-this">社团发布的新闻</li>
+    <li>社联发布的新闻</li>
+  </ul>
+  <div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+    <table class="layui-hide" id="test-table-toolbar" lay-filter="test-table-toolbar"></table>
+    </div>
+    <div class="layui-tab-item">
+    <table class="layui-hide" id="test-table-toolbar2" lay-filter="test-table-toolbar2"></table>
+    </div>
+  </div>
+</div>
+            
+            <script type="text/html" id="test-table-toolbar-toolbarDemo">     
+              <div class="layui-input-inline">
+              <select name="news_type" id="news_type" lay-verify="required" lay-search="">
+                  <option value="">可选择一个类别</option>
+                  <option value="社团风采">社团风采</option>
+                  <option value="活动回顾">活动回顾</option>
+                  <option value="公示">公示</option>
+              </select>
+              </div>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="新闻标题" autocomplete="off" class="layui-input layui-input-search" id="search-str">
+              </div>
+              <div class="layui-inline">
+              	<button class="layui-btn layui-btn-sm" lay-submit lay-filter="LAY-user-front-search" lay-event="news-search">
+                  <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                </button>
+              </div>
+            </script>
+            
+            <script type="text/html" id="test-table-toolbar-toolbarDemo2">
+              <div class="layui-input-inline">
+              <select name="news_type" id="news_type2" lay-verify="required" lay-search="">
+                  <option value="">可选择一个类别</option>
+                  <option value="社团风采">社团风采</option>
+                  <option value="活动回顾">活动回顾</option>
+                  <option value="公示">公示</option>
+              </select>
+              </div>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="新闻标题" autocomplete="off" class="layui-input layui-input-search" id="search-str2">
+              </div>
+              <div class="layui-inline">
+              	<button class="layui-btn layui-btn-sm" lay-submit lay-filter="LAY-user-front-search" lay-event="news-search">
+                  <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                </button>
+              </div>
+            </script>
+             
+            <script type="text/html" id="test-table-toolbar-barDemo">
+				<a class="layui-btn layui-btn-xs" lay-event="see">查看</a>
+              	<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+              	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+  layui.use(['admin', 'table','element','upload','carousel'], function(){
+	    var admin = layui.admin
+	    ,table = layui.table
+	    ,element = layui.element
+	    ,$=layui.$
+	    ,upload=layui.upload
+	    ,carousel=layui.carousel
+	    ,t = layui.view
+	    ,r = layui.form
+	    ,i = (layui.$, layui.admin);
+    
+    table.render({                 //渲染社团发布的新闻表格（表1）
+      elem: '#test-table-toolbar'
+      ,url:'news/select'
+      ,where:{
+    	  type:1,
+    	  news_type:$('#news_type').val(),
+    	  news_state:"已发布"
+      }
+      ,toolbar: '#test-table-toolbar-toolbarDemo'
+      ,title: '用户数据表'
+    	  ,cols: [[
+        	 {type:'radio'}
+            ,{field:'newsid', title:'ID', width:100, fixed: 'left', unresize: true, sort: true,hide:true}
+            ,{field:'cid', title:'社团编号', width:120,sort: true}
+            ,{field:'news_title', title:'新闻标题', width:280,sort: true}
+            ,{field:'news_contents', title:'新闻内容', width:190,hide:true}
+            ,{field:'news_img', title:'新闻图片', width:110,sort: true,hide:true}
+            ,{field:'news_type', title:'新闻类别', width:144, sort: true}
+            ,{field:'news_time', title:'发布时间', width:250, sort: true}
+            ,{fixed: 'right', title:'操作', toolbar: '#test-table-toolbar-barDemo', width:200}
+          ]]
+          ,page: true
+          ,id: 'testReload'
+        });
+    
+    table.render({                         //渲染社联发布的新闻表格（表2）
+        elem: '#test-table-toolbar2'
+        ,url:'news/select'
+        ,where:{
+      	  type:2,
+      	  news_type:$('#news_type').val(),
+      	  news_state:"已发布"
+        }
+        ,toolbar: '#test-table-toolbar-toolbarDemo2'
+        	,toolbar: '#test-table-toolbar-toolbarDemo'
+        	      ,title: '用户数据表'
+        	    	  ,cols: [[
+        	        	 {type:'radio'}
+        	            ,{field:'newsid', title:'ID', width:100, fixed: 'left', unresize: true, sort: true,hide:true}
+        	            ,{field:'uid', title:'管理员编号', width:120,sort: true}
+        	            ,{field:'news_title', title:'新闻标题', width:280,sort: true}
+        	            ,{field:'news_contents', title:'新闻内容', width:190,hide:true}
+        	            ,{field:'news_img', title:'新闻图片', width:110,sort: true,hide:true}
+        	            ,{field:'news_type', title:'新闻类别', width:150, sort: true}
+        	            ,{field:'news_time', title:'发布时间', width:250, sort: true}
+        	            ,{fixed:'right', title:'操作', toolbar: '#test-table-toolbar-barDemo', width:200}
+        	          ]]
+            ,page: true
+            ,id: 'testReload2'
+          });
+    table.on("tool(test-table-toolbar)", function(e) {        //操作栏
+		var l = e.data;
+		"del" === e.event ? layer.confirm("确定删除此新闻？", function(i) {
+				$.ajax({
+		              type: 'POST',
+		              url: "news/delete",
+		              dataType: 'json',
+		              contentType: 'application/json',
+		              data: JSON.stringify(l),
+		              success: function (msg) { // 返回的RequestResult的json对象
+		                  if (msg == 1) {
+		                	  e.del();layer.close(i);
+		                  } else {
+		                      layer.msg('删除失败！请重试');
+		                  }
+		              },
+		          }); 
+		
+		}) : "edit" === e.event && i.popup({
+			title: "编辑新闻",
+			area: ["600px", "600px"],
+			id: "LAY-popup-user-add",
+			success: function(e, i) {
+				t(this.id).render("news/list/modify", l).done(function() {
+					r.render(null, "layuiadmin-form-useradmin");
+					//多文件列表上传
+					 var imgsrc='';
+					  var demoListView = $('#demoList')
+					  ,uploadListIns = upload.render({
+						async:false
+					    ,elem: '#testList'
+					    ,url: 'news/uploadimg'
+					    ,acceptMime: 'image/*'
+					    ,multiple: true
+					    ,auto: false
+					    ,bindAction: '#testListAction'
+					    ,choose: function(obj){   
+					      var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+					      //读取本地文件
+					      obj.preview(function(index, file, result){
+					        var tr = $(['<tr id="upload-'+ index +'">'
+					          ,'<td>'+ file.name +'</td>'
+					          ,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+					          ,'<td>等待上传</td>'
+					          ,'<td>'
+					            ,'<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+					            ,'<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+					          ,'</td>'
+					        ,'</tr>'].join(''));
+					        
+					        //单个重传
+					        tr.find('.demo-reload').on('click', function(){
+					          obj.upload(index, file);
+					        });
+					        
+					        //删除
+					        tr.find('.demo-delete').on('click', function(){
+					          delete files[index]; //删除对应的文件
+					          tr.remove();
+					          uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+					        });
+					        
+					        demoListView.append(tr);
+					      });
+					    }
+					    ,done: function(res, index, upload){
+					      if(res.code == 0){ //上传成功
+					    	 imgsrc=imgsrc+res.data.src+";";
+					        var tr = demoListView.find('tr#upload-'+ index)
+					        ,tds = tr.children();
+					        tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+					        tds.eq(3).html(''); //清空操作
+					        return delete this.files[index]; //删除文件队列已经上传成功的文件
+					      }
+					      this.error(index, upload);
+					    }
+					    ,error: function(index, upload){
+					      var tr = demoListView.find('tr#upload-'+ index)
+					      ,tds = tr.children();
+					      tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+					      tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
+					    }
+					  });
+					r.on("submit(LAY-user-front-submit)", function(e) {
+						e.field.news_img=imgsrc;
+						e.field.newsid=l.newsid;
+						$.ajax({
+				              type: 'POST',
+				              url: "news/update",
+				              dataType: 'json',
+				              contentType: 'application/json',
+				              data: JSON.stringify(e.field),
+				              success: function (msg) { 
+				                  if (msg == 1) {
+				                	  layui.table.reload("testReload");
+				                  } else {
+				                      layer.msg('更新失败！请重试');
+				                  }
+				              },
+				          }); 
+						layer.close(i);
+						
+					})
+				})
+			}
+		})
+		if(e.event=="see"){
+			i.popup({
+			title: "查看新闻",
+			area: ["600px", "600px"],
+			id: "LAY-popup-user-add",
+			success: function(e, i) {
+				t(this.id).render("news/list/more", l).done(function() {
+					//图片轮播
+					var ins=carousel.render({
+						elem: '#test',
+						width: '80%',
+						height: '250px',
+						interval: 3000
+					});
+					var src= l.news_img.substring(0, l.news_img.length - 1);
+					var srcs = src.split(';');
+					$.each(srcs, function(index, item){
+						var img=$("<img width='100%' height='100%'>").attr('src',item);
+						var imgitem=$("<div></div>").append(img);
+						$("#lunbo").append(imgitem);
+						ins.reload();
+					})
+				})
+			}
+		})
+		}
+	})
+	
+	 table.on("tool(test-table-toolbar2)", function(e) {        //操作栏
+		var l = e.data;
+		"del" === e.event ? layer.confirm("确定删除此新闻？", function(i) {
+				$.ajax({
+		              type: 'POST',
+		              url: "news/delete",
+		              dataType: 'json',
+		              contentType: 'application/json',
+		              data: JSON.stringify(l),
+		              success: function (msg) { // 返回的RequestResult的json对象
+		                  if (msg == 1) {
+		                	  e.del();layer.close(i);
+		                  } else {
+		                      layer.msg('删除失败！请重试');
+		                  }
+		              },
+		          }); 
+		
+		}) : "edit" === e.event && i.popup({
+			title: "编辑新闻",
+			area: ["600px", "600px"],
+			id: "LAY-popup-user-add",
+			success: function(e, i) {
+				t(this.id).render("news/list/modify", l).done(function() {
+					r.render(null, "layuiadmin-form-useradmin");
+					//多文件列表上传
+					 var imgsrc='';
+					  var demoListView = $('#demoList')
+					  ,uploadListIns = upload.render({
+						async:false
+					    ,elem: '#testList'
+					    ,url: 'news/uploadimg'
+					    ,acceptMime: 'image/*'
+					    ,multiple: true
+					    ,auto: false
+					    ,bindAction: '#testListAction'
+					    ,choose: function(obj){   
+					      var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+					      //读取本地文件
+					      obj.preview(function(index, file, result){
+					        var tr = $(['<tr id="upload-'+ index +'">'
+					          ,'<td>'+ file.name +'</td>'
+					          ,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+					          ,'<td>等待上传</td>'
+					          ,'<td>'
+					            ,'<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+					            ,'<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+					          ,'</td>'
+					        ,'</tr>'].join(''));
+					        
+					        //单个重传
+					        tr.find('.demo-reload').on('click', function(){
+					          obj.upload(index, file);
+					        });
+					        
+					        //删除
+					        tr.find('.demo-delete').on('click', function(){
+					          delete files[index]; //删除对应的文件
+					          tr.remove();
+					          uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+					        });
+					        
+					        demoListView.append(tr);
+					      });
+					    }
+					    ,done: function(res, index, upload){
+					      if(res.code == 0){ //上传成功
+					    	 imgsrc=imgsrc+res.data.src+";";
+					        var tr = demoListView.find('tr#upload-'+ index)
+					        ,tds = tr.children();
+					        tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+					        tds.eq(3).html(''); //清空操作
+					        return delete this.files[index]; //删除文件队列已经上传成功的文件
+					      }
+					      this.error(index, upload);
+					    }
+					    ,error: function(index, upload){
+					      var tr = demoListView.find('tr#upload-'+ index)
+					      ,tds = tr.children();
+					      tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+					      tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
+					    }
+					  });
+					r.on("submit(LAY-user-front-submit)", function(e) {
+						e.field.news_img=imgsrc;
+						e.field.newsid=l.newsid;
+						$.ajax({
+				              type: 'POST',
+				              url: "news/update",
+				              dataType: 'json',
+				              contentType: 'application/json',
+				              data: JSON.stringify(e.field),
+				              success: function (msg) { 
+				                  if (msg == 1) {
+				                	  layui.table.reload("testReload2");
+				                  } else {
+				                      layer.msg('更新失败！请重试');
+				                  }
+				              },
+				          }); 
+						layer.close(i);
+						
+					})
+				})
+			}
+		})
+		if(e.event=="see"){
+			i.popup({
+			title: "查看新闻",
+			area: ["600px", "600px"],
+			id: "LAY-popup-user-add",
+			success: function(e, i) {
+				t(this.id).render("news/list/more", l).done(function() {
+					//图片轮播
+					var ins=carousel.render({
+						elem: '#test',
+						width: '80%',
+						height: '250px',
+						interval: 3000
+					});
+					var src= l.news_img.substring(0, l.news_img.length - 1);
+					var srcs = src.split(';');
+					$.each(srcs, function(index, item){
+						var img=$("<img width='100%' height='100%'>").attr('src',item);
+						var imgitem=$("<div></div>").append(img);
+						$("#lunbo").append(imgitem);
+						ins.reload();
+					})
+				})
+			}
+		})
+		}
+	})
+	
+    
+       table.on('toolbar(test-table-toolbar)', function(obj){   //表1头工具栏监听
+    	switch(obj.event){
+        case 'news-search':                //搜索
+        	var str=$("#search-str").val();
+        	table.reload('testReload', {
+        		  where: { 
+        		    str:str,
+        		    type:1,
+        		    news_type:$("#news_type").val(),
+        		    news_state:"已发布"
+        		  }
+        		  ,page: {
+        		    curr: 1 
+        		  }
+        		});  
+        	break;
+    	}
+    	
+    })
+    
+    table.on('toolbar(test-table-toolbar2)', function(obj){   //表2头工具栏监听
+    	switch(obj.event){
+        case 'news-search':                //搜索
+        	var str=$("#search-str2").val()
+        	table.reload('testReload2', {
+        		  where: { 
+        		    str:str,
+        		    type:2,
+        		    news_type:$("#news_type2").val(),
+        		    news_state:"已发布"
+        		  }
+        		  ,page: {
+        		    curr: 1 
+        		  }
+        		});  
+        	break;
+    	}
+    	
+    }) 
+    
+ 
+  });
+  </script>
+  

@@ -1,0 +1,75 @@
+
+<div class="layui-form" lay-filter="layuiadmin-form-useradmin" style="padding: 20px 0 0 0;">
+  <div class="layui-form-item">
+    <label class="layui-form-label">姓名</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="text" name="name" value="{{ d.params.name || '' }}" lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">学号</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="text" name="sduid" value="{{ d.params.sduid || '' }}" lay-verify="required" placeholder="请输入学号" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">专业</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="text" name="major" value="{{ d.params.major || '' }}" lay-verify="required" placeholder="请输入专业" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">班级</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="text" name="class" value="{{ d.params.class || '' }}" lay-verify="required" placeholder="请输入班级" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">手机</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="text" name="phone" value="{{ d.params.phone || '' }}" placeholder="请输入号码" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">邮箱</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="text" name="email" value="{{ d.params.email || '' }}" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item" lay-filter="sex">
+    <label class="layui-form-label">选择性别</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <input type="radio" name="sex" value="男" title="男" {{ d.params.sex === '男' ? 'checked' : '' }}>
+        <input type="radio" name="sex" value="女" title="女" {{ d.params.sex === '女' ? 'checked' : '' }}>
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label"></label>
+    <div class="layui-input-inline">
+      <input type="button" lay-submit lay-filter="LAY-user-front-submit" value="确认" class="layui-btn">
+    </div>
+  </div>
+</div>
+
+<script>
+layui.use(['admin', 'form', 'upload'], function(){
+  var $ = layui.$
+  ,form = layui.form
+  ,upload = layui.upload;
+  
+})
+</script>

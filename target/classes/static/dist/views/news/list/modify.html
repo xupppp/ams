@@ -1,0 +1,82 @@
+<body>
+<div class="layui-form layui-form-pane" lay-filter="layuiadmin-form-useradmin" >
+  <div class="layui-form-item">
+    <label class="layui-form-label">新闻标题</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <input type="text" name="news_title" id="news_id" value="{{ d.params.news_title || '' }}" lay-verify="required" placeholder="请输入新闻标题" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+   <div class="layui-form-item">
+    <label class="layui-form-label">新闻类别</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <select name="news_type" id="mo_news_type"  lay-verify="required"  lay-search="" >
+                <option value="">请搜索或直接选择...</option>
+                <option value="社团风采" {{ d.params.news_type === '社团风采' ? 'selected' : '' }}>社团风采</option>
+                <option value="活动回顾" {{ d.params.news_type === '活动回顾' ? 'selected' : '' }}>活动回顾</option>
+				<option value="公示" {{ d.params.news_type === '公示' ? 'selected' : '' }}>公示</option>
+        </select>
+      </script>
+    </div>
+  </div>
+  
+         <div class="layui-form-item">
+							<label class="layui-form-label">新闻图片</label>
+							<div class="layui-input-block">
+								<div class="layui-upload">
+  <button type="button" class="layui-btn layui-btn-primary" id="testList">
+  <i class="layui-icon">&#xe654;</i>请选择
+  </button> 
+  <div class="layui-upload-list">
+    <table class="layui-table">
+      <thead>
+        <tr><th>文件名</th>
+        <th>大小</th>
+        <th>状态</th>
+        <th>操作</th>
+      </tr></thead>
+      <tbody id="demoList"></tbody>
+    </table>
+  </div>
+  <button type="button" class="layui-btn layui-btn-primary" id="testListAction">
+  <i class="layui-icon">&#xe67c;</i>开始上传</button>
+</div>
+							</div>
+							<input type="text" name="news_img" id="news_img" style='display:none'>
+						</div> 
+  
+  
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">新闻内容</label>
+    <div class="layui-input-block">
+      <script type="text/html" template>
+        <textarea name="news_contents" required lay-verify="required"class="layui-textarea">{{ d.params.news_contents || '' }}</textarea>
+      </script>
+    </div>
+  </div>
+  
+  <div class="layui-form-item">
+
+      <input type="button" lay-submit lay-filter="LAY-user-front-submit" value="确认" class="layui-btn">
+ 
+  </div>
+  
+</div>
+
+ <script>
+layui.use(['admin', 'form', 'upload', 'laydate'], function(){
+  var $ = layui.$
+  ,form = layui.form
+  ,laydate = layui.laydate
+  ,upload = layui.upload;     
+
+  laydate.render({
+    elem: '#timechoose1'
+    ,type: 'datetime'
+  });
+  
+})
+</script> 
+</body>

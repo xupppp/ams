@@ -1,0 +1,24 @@
+<meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="../../../../start/layui/css/layui.css"  media="all">
+<script src="../../../../start/layui/layui.js" charset="utf-8"></script>
+
+<form class="layui-form" action="" style="margin-top:20px;">
+  <div class="layui-form-item">
+    <label class="layui-form-label">学号</label>
+    <div class="layui-input-inline">
+      <input type="text" name="password" lay-verify="pass" placeholder="请输入学号" autocomplete="off" class="layui-input">
+    </div>
+    <div class="layui-form-mid layui-word-aux">学号格式为8位数</div>
+  </div>
+</form>
+
+<script>
+layui.use(['admin', 'form', 'upload'], function(){
+  var $ = layui.$
+  ,form = layui.form
+  ,upload = layui.upload;
+  
+})
+</script>
