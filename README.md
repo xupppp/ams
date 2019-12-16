@@ -10,9 +10,6 @@ https://www.cnblogs.com/xupppp/p/11795218.html
 
 springboot layui mybatis
 
-#### 部署说明
-
-需要导入提供的数据库文件，并且将application.properties中的mysql用户名和密码改为自己的
 
 #### 小组成员
 
